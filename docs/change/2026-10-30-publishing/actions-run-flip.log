@@ -1,0 +1,14 @@
+run-actions 2026-11-16T23:13:27+01:00: claude-box: flip mc-devop/claude-box public
+
+######## 1. local: test "$(gh repo view mc-devop/claude-box --json visibility,isArchived --jq '"\(.visibility) \(.isArchived)"')" = "PRIVATE false" || { echo "mc-devop/claude-box isn't private and unarchived"; exit 1; }; test "$(git ls-remote origin | cut -f2 | tr '\n' ' ')" = "HEAD refs/heads/main " && test "$(git ls-remote origin refs/heads/main | cut -f1)" = 80f1f911e2f58d89f538b7999e0723341140cfa5 || { echo "GitHub holds more than main at 80f1f91"; exit 1; }; gh repo edit mc-devop/claude-box --visibility public --accept-visibility-change-consequences
+   > Makes mc-devop/claude-box public on GitHub. Refuses unless it's still
+   > private and not archived and its only ref is main at 80f1f91, the
+   > commit you reviewed. Undo: gh repo edit mc-devop/claude-box
+   > --visibility private --accept-visibility-change-consequences (stars
+   > and watchers are lost on the way back).
+
+######## 2. local: gh repo view mc-devop/claude-box --json visibility,isArchived,url && git log --oneline origin/main
+   > Reads it back: public, not archived, one commit.
+{"isArchived":false,"url":"https://github.com/mc-devop/claude-box","visibility":"PUBLIC"}
+80f1f91 claude-box
+Done.

@@ -173,8 +173,7 @@ What the box doesn't prevent. Each stays as it is until the
   approve; check them before your yes.
 - **`dev` and `run-actions` run from the clone's checked-out files.**
   The image and the plugins come from `main`, but with a branch checked
-  out in the clone, `dev` itself and `dev run` are that branch's
-  ([backlog](../../direction/backlog.md)).
+  out in the clone, `dev` itself and `dev run` are that branch's.
 - **Secrets lying in `~/Projects`** (a `.env`, a key file) are readable
   in the box.
 - **A plugin's state is writable from every box**: Claude Code's
