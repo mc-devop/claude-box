@@ -1,0 +1,27 @@
+# The rules-folder check (plan-layers.md, Evidence), two runs of one out/actions.txt.
+# Run 1 (22:43) as Claude read it from out/actions.log, which run 2 overwrote; run 2 (22:44) as in the file.
+# Run 1, steps 2 and 3 (step 1 created the worktree):
+before: no ~/.claude/rules
+mount: read-only
+AMBER-FALCON
+COPPER-HERON
+after: claude-box-check
+claude-box-check-flat.md
+left: directory, 0 bytes, /home/mc/.claude/rules/claude-box-check
+left: regular empty file, 0 bytes, /home/mc/.claude/rules/claude-box-check-flat.md
+rmdir: failed to remove 'rules/claude-box-check': Permission denied
+ABORTED at step 3: local step failed (exit 1)
+
+# Run 2:
+run-actions 2026-10-30T22:44:03+01:00: claude-box: Worktree for claude/layers, and the rules-folder check (E4, E5)
+
+######## 1. local: { [ "$(git branch --show-current)" = main ] && [ -z "$(git status --porcelain)" ] && [ ! -e .worktrees ] && ! git rev-parse -q --verify refs/heads/claude/layers > /dev/null; } || { echo "Refused: not a clean main, or .worktrees/ or claude/layers already exists"; false; } && mkdir .worktrees && echo '*' > .worktrees/.gitignore && git worktree add --relative-paths .worktrees/layers -b claude/layers main && git worktree list && cat .worktrees/layers/.git
+   (ran 2026-10-30T22:43:00+01:00: skipped)
+
+######## 2. local: d=$(mktemp -d) && trap 'rm -rf "$d"' EXIT && mkdir "$d/sub" && echo 'The codeword of the subfolder rule is AMBER-FALCON.' > "$d/sub/check.md" && echo 'The codeword of the flat rule is COPPER-HERON.' > "$d/flat.md" && chmod -R a+rX "$d" && echo "before: $(ls -A ~/.claude/rules 2>/dev/null || echo 'no ~/.claude/rules')" && podman run --rm --userns=keep-id:uid=1000,gid=1000 --cap-drop=all --security-opt=no-new-privileges -v "$HOME/.claude":/home/claude/.claude:z -e CLAUDE_CONFIG_DIR=/home/claude/.claude -v "$d/sub":/home/claude/.claude/rules/claude-box-check:ro,z -v "$d/flat.md":/home/claude/.claude/rules/claude-box-check-flat.md:ro,z localhost/claude-box sh -c 'if touch /home/claude/.claude/rules/claude-box-check/x 2>/dev/null; then echo "mount: writable"; else echo "mount: read-only"; fi; claude -p "List every codeword your instructions define, one per line, nothing else."' && echo "after: $(ls -A ~/.claude/rules 2>/dev/null || echo 'no ~/.claude/rules')" && for p in ~/.claude/rules/claude-box-check ~/.claude/rules/claude-box-check-flat.md; do if [ -e "$p" ]; then stat -c 'left: %F, %s bytes, %n' "$p"; else echo "not left: $p"; fi; done
+   (ran 2026-10-30T22:43:13+01:00: skipped)
+
+######## 3. local: cd ~/.claude && podman unshare sh -c '{ [ ! -d rules/claude-box-check ] || rmdir rules/claude-box-check; } && { [ ! -e rules/claude-box-check-flat.md ] || [ -s rules/claude-box-check-flat.md ] || rm rules/claude-box-check-flat.md; } && { [ ! -d rules ] || rmdir --ignore-fail-on-non-empty rules; }' && echo "left: $(ls -A rules 2>/dev/null || echo 'no ~/.claude/rules')"
+   > Removes what step 2's mount points left on your laptop, only where empty: the claude-box-check folder, the claude-box-check-flat.md file, then ~/.claude/rules itself if nothing else is in it. Podman made them owned by a user of its namespace (the first try was refused: Permission denied), so this runs under podman unshare, which acts as that namespace's root on your files only. Nothing with content is erased (a non-empty one aborts the run instead).
+left: no ~/.claude/rules
+Done.

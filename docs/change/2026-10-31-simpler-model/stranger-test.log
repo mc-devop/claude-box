@@ -1,0 +1,1364 @@
+LS-BEGIN
+core
+dev
+docs
+.gitignore
+LICENSE
+plugins
+README.md
+tests
+LS-END
+Linked ~/.local/bin/dev -> /var/home/cbtest/claude-box/dev
+
+Wrote your config, ~/.claude/.dev (every kind: core/defaults.dev).
+
+STEP 1/21: FROM registry.fedoraproject.org/fedora:44
+Trying to pull registry.fedoraproject.org/fedora:44...
+Getting image source signatures
+Copying blob a96e8f0f600d [-------------------------------------] 0.0b / 69.1MiB
+Copying blob a96e8f0f600d [-------------------------------------] 0.0b / 69.1MiB
+Copying blob a96e8f0f600d [---------------------------] 0.0b / 69.1MiB | 0.0 b/s
+Copying blob a96e8f0f600d [>---------------------] 3.5MiB / 69.1MiB | 17.2 MiB/s
+Copying blob a96e8f0f600d [==>------------------] 9.7MiB / 69.1MiB | 988.0 MiB/s
+Copying blob a96e8f0f600d [====>---------------] 15.8MiB / 69.1MiB | 133.2 MiB/s
+Copying blob a96e8f0f600d [=====>---------------] 20.9MiB / 69.1MiB | 97.4 MiB/s
+Copying blob a96e8f0f600d [=======>-------------] 26.3MiB / 69.1MiB | 71.4 MiB/s
+Copying blob a96e8f0f600d [=========>-----------] 31.7MiB / 69.1MiB | 65.3 MiB/s
+Copying blob a96e8f0f600d [==========>---------] 37.4MiB / 69.1MiB | 486.4 MiB/s
+Copying blob a96e8f0f600d [============>--------] 41.1MiB / 69.1MiB | 88.5 MiB/s
+Copying blob a96e8f0f600d [=============>------] 46.9MiB / 69.1MiB | 452.1 MiB/s
+Copying blob a96e8f0f600d [===============>-----] 53.4MiB / 69.1MiB | 68.9 MiB/s
+Copying blob a96e8f0f600d [================>---] 59.0MiB / 69.1MiB | 222.6 MiB/s
+Copying blob a96e8f0f600d [==================>-] 64.5MiB / 69.1MiB | 274.2 MiB/s
+Copying blob a96e8f0f600d done   | 
+Copying blob a96e8f0f600d done   | 
+Copying blob a96e8f0f600d done   | 
+Copying blob a96e8f0f600d done   | 
+Copying blob a96e8f0f600d done   | 
+Copying blob a96e8f0f600d done   | 
+Copying blob a96e8f0f600d done   | 
+Copying blob a96e8f0f600d done   | 
+Copying blob a96e8f0f600d done   | 
+Copying blob a96e8f0f600d done   | 
+Copying config 1d326f8e4a done   | 
+Copying config 1d326f8e4a done   | 
+Copying config 1d326f8e4a done   | 
+Writing manifest to image destination
+STEP 2/21: LABEL claude-box.image=1
+--> b0c0725fecd7
+STEP 3/21: RUN dnf -y install git ripgrep findutils procps-ng ShellCheck diffutils patch python3 && dnf clean all
+Updating and loading repositories:
+ Fedora 44 openh264 (From Cisco) - x86_ 100% |  88.0   B/s |   5.3 KiB |  01m01s
+ Fedora 44 - x86_64                     100% | 602.0 KiB/s |  36.8 MiB |  01m03s
+ Fedora 44 - x86_64 - Updates           100% | 207.0 KiB/s |  12.8 MiB |  01m03s
+>>> Curl error (28): Timeout was reached for https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/repodata/repomd.xml [Connection timed out after 30000 milliseconds] - https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/repodata/repomd.xml
+>>> Curl error (28): Timeout was reached for https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/repodata/b446cb872a8c18a8a5f47f701e1b651df25eda2f9c881656c8d3a6178c628e6c-primary.xml.zck [Connection timed out after 30000 milliseconds] - https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/repodata/b446cb872a8c18a8a5f47f701e1b651df25eda2f9c881656c8d3a6178c628e6c-primary.xml.zck
+>>> Curl error (28): Timeout was reached for https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/repodata/f584526b425be40ca56c63c03b5caddda698b4adbf9dfb1677a64f41b55693f6-comps-Everything.x86_64.xml.zst [Connection timed out after 30000 milliseconds] - https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/repodata/f584526b425be40ca56c63c03b5caddda698b4adbf9dfb1677a64f41b55693f6-comps-Everything.x86_64.xml.zst
+>>> Curl error (28): Timeout was reached for https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/repodata/75a387ab9c6ea8b9c86a506b7752f193874b10aa2660b6dea1b6f793868bdbdc-updateinfo.xml.zck [Connection timed out after 30000 milliseconds] - https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/repodata/75a387ab9c6ea8b9c86a506b7752f193874b10aa2660b6dea1b6f793868bdbdc-updateinfo.xml.zck
+Repositories loaded.
+Package "findutils-1:4.10.0-7.fc44.x86_64" is already installed.
+
+Package                     Arch   Version                   Repository      Size
+Installing:
+ ShellCheck                 x86_64 0:0.11.0-4.fc44           fedora      22.4 MiB
+ diffutils                  x86_64 0:3.12-5.fc44             fedora       1.6 MiB
+ git                        x86_64 0:2.56.1-1.fc44           updates     57.7 KiB
+ patch                      x86_64 0:2.8-4.fc44              fedora     226.6 KiB
+ procps-ng                  x86_64 0:4.0.6-1.fc44            fedora       1.1 MiB
+ python3                    x86_64 0:3.14.10-1.fc44          updates     28.7 KiB
+ ripgrep                    x86_64 0:15.2.0-1.fc44           updates      4.6 MiB
+Installing dependencies:
+ ed                         x86_64 0:1.22.5-2.fc44           fedora     149.7 KiB
+ expat                      x86_64 0:2.9.0-1.fc44            updates    349.6 KiB
+ git-core                   x86_64 0:2.56.1-1.fc44           updates     27.7 MiB
+ git-core-doc               noarch 0:2.56.1-1.fc44           updates     19.1 MiB
+ groff-base                 x86_64 0:1.23.0-12.fc44          fedora       3.9 MiB
+ less                       x86_64 0:710-2.fc44              updates    488.6 KiB
+ libedit                    x86_64 0:3.1-59.20260512cvs.fc44 updates    248.3 KiB
+ libfdisk                   x86_64 0:2.41.6-1.fc44           updates    388.3 KiB
+ libgit2                    x86_64 0:1.9.7-1.fc44            updates      1.4 MiB
+ liblastlog2                x86_64 0:2.41.6-1.fc44           updates     41.6 KiB
+ libssh2                    x86_64 0:1.11.1-9.fc44           updates    338.6 KiB
+ llhttp                     x86_64 0:9.3.1-1.fc44            fedora      96.6 KiB
+ mpdecimal                  x86_64 0:4.0.1-3.fc44            fedora     217.1 KiB
+ ncurses                    x86_64 0:6.6-1.fc44              fedora     611.4 KiB
+ numactl-libs               x86_64 0:2.0.19-4.fc44           fedora      56.8 KiB
+ oniguruma                  x86_64 0:6.9.10-4.fc44           fedora     770.9 KiB
+ openssh                    x86_64 0:10.2p1-16.fc44          updates      1.4 MiB
+ openssh-clients            x86_64 0:10.2p1-16.fc44          updates      2.7 MiB
+ perl-AutoLoader            noarch 0:5.74-525.fc44           updates     20.6 KiB
+ perl-B                     x86_64 0:1.89-525.fc44           updates    501.2 KiB
+ perl-Carp                  noarch 0:1.54-521.fc44           fedora      46.6 KiB
+ perl-Class-Struct          noarch 0:0.68-525.fc44           updates     25.4 KiB
+ perl-Data-Dumper           x86_64 0:2.192-523.fc44          updates    115.5 KiB
+ perl-Digest                noarch 0:1.20-521.fc44           fedora      35.3 KiB
+ perl-Digest-MD5            x86_64 0:2.59-521.fc44           fedora      59.6 KiB
+ perl-DynaLoader            x86_64 0:1.57-525.fc44           updates     32.1 KiB
+ perl-Encode                x86_64 4:3.21-521.fc44           fedora       4.7 MiB
+ perl-Errno                 x86_64 0:1.38-525.fc44           updates      8.4 KiB
+ perl-Error                 noarch 1:0.17030-3.fc44          fedora      76.8 KiB
+ perl-Exporter              noarch 0:5.79-521.fc44           fedora      54.3 KiB
+ perl-Fcntl                 x86_64 0:1.20-525.fc44           updates     48.7 KiB
+ perl-File-Basename         noarch 0:2.86-525.fc44           updates     14.0 KiB
+ perl-File-Path             noarch 0:2.18-522.fc44           fedora      63.5 KiB
+ perl-File-Temp             noarch 1:0.231.200-2.fc44        fedora     163.7 KiB
+ perl-File-stat             noarch 0:1.14-525.fc44           updates     12.5 KiB
+ perl-FileHandle            noarch 0:2.05-525.fc44           updates      9.4 KiB
+ perl-Getopt-Long           noarch 1:2.58-521.fc44           fedora     144.5 KiB
+ perl-Getopt-Std            noarch 0:1.14-525.fc44           updates     11.2 KiB
+ perl-Git                   noarch 0:2.56.1-1.fc44           updates     64.4 KiB
+ perl-HTTP-Tiny             noarch 0:0.096-1.fc44            updates    162.4 KiB
+ perl-IO                    x86_64 0:1.55-525.fc44           updates    147.3 KiB
+ perl-IO-Socket-IP          noarch 0:0.43-522.fc44           fedora     100.3 KiB
+ perl-IO-Socket-SSL         noarch 0:2.098-2.fc44            fedora     723.5 KiB
+ perl-IPC-Open3             noarch 0:1.24-525.fc44           updates     27.7 KiB
+ perl-MIME-Base32           noarch 0:1.303-25.fc44           fedora      30.7 KiB
+ perl-MIME-Base64           x86_64 0:3.16-521.fc44           fedora      41.9 KiB
+ perl-Net-SSLeay            x86_64 0:1.94-12.fc44            fedora       1.3 MiB
+ perl-POSIX                 x86_64 0:2.23-525.fc44           updates    229.4 KiB
+ perl-PathTools             x86_64 0:3.94-521.fc44           fedora     179.9 KiB
+ perl-Pod-Escapes           noarch 1:1.07-521.fc44           fedora      24.9 KiB
+ perl-Pod-Perldoc           noarch 0:3.28.01-522.fc44        fedora     163.7 KiB
+ perl-Pod-Simple            noarch 1:3.47-4.fc44             fedora     565.3 KiB
+ perl-Pod-Usage             noarch 4:2.05-521.fc44           fedora      86.3 KiB
+ perl-Scalar-List-Utils     x86_64 5:1.70-2.fc44             fedora     144.8 KiB
+ perl-SelectSaver           noarch 0:1.02-525.fc44           updates      2.2 KiB
+ perl-Socket                x86_64 4:2.043-1.fc44            updates    121.8 KiB
+ perl-Storable              x86_64 1:3.37-522.fc44           fedora     235.1 KiB
+ perl-Symbol                noarch 0:1.09-525.fc44           updates      6.8 KiB
+ perl-Term-ANSIColor        noarch 0:5.01-522.fc44           fedora      97.5 KiB
+ perl-Term-Cap              noarch 0:1.18-521.fc44           fedora      29.3 KiB
+ perl-TermReadKey           x86_64 0:2.38-27.fc44            fedora      63.9 KiB
+ perl-Text-ParseWords       noarch 0:3.31-521.fc44           fedora      13.6 KiB
+ perl-Text-Tabs+Wrap        noarch 0:2024.001-521.fc44       fedora      22.6 KiB
+ perl-Time-HiRes            x86_64 4:1.9778-521.fc44         fedora     115.6 KiB
+ perl-Time-Local            noarch 2:1.350-521.fc44          fedora      69.0 KiB
+ perl-URI                   noarch 0:5.36-1.fc44             updates    275.7 KiB
+ perl-Unicode-Normalize     x86_64 0:1.32-521.fc44           fedora     486.0 KiB
+ perl-base                  noarch 0:2.27-525.fc44           updates     12.6 KiB
+ perl-constant              noarch 0:1.33-522.fc44           fedora      26.2 KiB
+ perl-if                    noarch 0:0.61.000-525.fc44       updates      5.8 KiB
+ perl-interpreter           x86_64 4:5.42.3-525.fc44         updates    118.8 KiB
+ perl-lib                   x86_64 0:0.65-525.fc44           updates      8.5 KiB
+ perl-libnet                noarch 0:3.16-1.fc44             updates    293.5 KiB
+ perl-libs                  x86_64 4:5.42.3-525.fc44         updates     11.6 MiB
+ perl-locale                noarch 0:1.13-525.fc44           updates      6.1 KiB
+ perl-mro                   x86_64 0:1.29-525.fc44           updates     41.4 KiB
+ perl-overload              noarch 0:1.40-525.fc44           updates     71.6 KiB
+ perl-overloading           noarch 0:0.02-525.fc44           updates      4.9 KiB
+ perl-parent                noarch 1:0.244-521.fc44          fedora      10.3 KiB
+ perl-podlators             noarch 1:6.0.2-522.fc44          updates    317.7 KiB
+ perl-vars                  noarch 0:1.05-525.fc44           updates      3.9 KiB
+ python-pip-wheel           noarch 0:26.0.1-3.fc44           updates      1.2 MiB
+ python3-libs               x86_64 0:3.14.10-1.fc44          updates     44.2 MiB
+ util-linux                 x86_64 0:2.41.6-1.fc44           updates      3.5 MiB
+Installing weak dependencies:
+ 7zip                       x86_64 0:26.04-1.fc44            updates      3.3 MiB
+ bat                        x86_64 0:0.26.1-4.fc44           updates      5.3 MiB
+ less-color                 x86_64 0:710-2.fc44              updates      2.4 KiB
+ perl-NDBM_File             x86_64 0:1.18-525.fc44           updates     28.4 KiB
+ python-unversioned-command noarch 0:3.14.10-1.fc44          updates     23.0   B
+ python3-html2text          noarch 0:2025.4.15-6.fc44        fedora     289.4 KiB
+ unzip                      x86_64 0:6.0-69.fc44             fedora     445.8 KiB
+
+Transaction Summary:
+ Installing:        98 packages
+
+Total size of inbound packages is 43 MiB. Need to download 43 MiB.
+After this operation, 172 MiB extra will be used (install 172 MiB, remove 0 B).
+[ 1/98] patch-0:2.8-4.fc44.x86_64       100% |   1.1 MiB/s | 115.2 KiB |  00m00s
+[ 2/98] numactl-libs-0:2.0.19-4.fc44.x8 100% |   1.4 MiB/s |  32.2 KiB |  00m00s
+[ 3/98] diffutils-0:3.12-5.fc44.x86_64  100% |   2.7 MiB/s | 395.3 KiB |  00m00s
+[ 4/98] ed-0:1.22.5-2.fc44.x86_64       100% |   2.8 MiB/s |  85.4 KiB |  00m00s
+[ 5/98] perl-Getopt-Long-1:2.58-521.fc4 100% |   3.0 MiB/s |  63.6 KiB |  00m00s
+[ 6/98] perl-PathTools-0:3.94-521.fc44. 100% |   3.3 MiB/s |  87.3 KiB |  00m00s
+[ 7/98] ShellCheck-0:0.11.0-4.fc44.x86_ 100% |  14.5 MiB/s |   3.2 MiB |  00m00s
+[ 8/98] perl-TermReadKey-0:2.38-27.fc44 100% |   1.4 MiB/s |  35.5 KiB |  00m00s
+[ 9/98] git-0:2.56.1-1.fc44.x86_64      100% | 838.0   B/s |  41.0 KiB |  00m50s
+>>> Curl error (7): Could not connect to server for https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/g/git-2.56.1-1.fc44.x86_64.rpm [Failed to connect to fedora.ip-connect.vn.ua port 443 after 19864 ms: Could not connect to server] - https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/g/git-2.56.1-1.fc44.x86_64.rpm
+>>> Curl error (28): Timeout was reached for http://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/g/git-2.56.1-1.fc44.x86_64.rpm [Connection timed out after 30000 milliseconds] - http://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/g/git-2.56.1-1.fc44.x86_64.rpm
+[10/98] git-core-doc-0:2.56.1-1.fc44.no 100% |  65.0 KiB/s |   3.2 MiB |  00m51s
+>>> Curl error (7): Could not connect to server for https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/g/git-core-doc-2.56.1-1.fc44.noarch.rpm [Failed to connect to fedora.ip-connect.vn.ua port 443 after 19774 ms: Could not connect to server] - https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/g/git-core-doc-2.56.1-1.fc44.noarch.rpm
+>>> Curl error (28): Timeout was reached for http://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/g/git-core-doc-2.56.1-1.fc44.noarch.rpm [Connection timed out after 30000 milliseconds] - http://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/g/git-core-doc-2.56.1-1.fc44.noarch.rpm
+[11/98] perl-Exporter-0:5.79-521.fc44.n 100% | 513.6 KiB/s |  30.8 KiB |  00m00s
+[12/98] perl-Pod-Usage-4:2.05-521.fc44. 100% |   1.0 MiB/s |  40.7 KiB |  00m00s
+[13/98] perl-Text-ParseWords-0:3.31-521 100% | 823.6 KiB/s |  16.5 KiB |  00m00s
+[14/98] perl-constant-0:1.33-522.fc44.n 100% |   1.1 MiB/s |  22.9 KiB |  00m00s
+[15/98] perl-Carp-0:1.54-521.fc44.noarc 100% |   1.3 MiB/s |  28.8 KiB |  00m00s
+[16/98] perl-Scalar-List-Utils-5:1.70-2 100% |   2.4 MiB/s |  75.4 KiB |  00m00s
+[17/98] git-core-0:2.56.1-1.fc44.x86_64 100% | 114.2 KiB/s |   5.7 MiB |  00m52s
+>>> Curl error (7): Could not connect to server for https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/g/git-core-2.56.1-1.fc44.x86_64.rpm [Failed to connect to fedora.ip-connect.vn.ua port 443 after 19792 ms: Could not connect to server] - https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/g/git-core-2.56.1-1.fc44.x86_64.rpm
+>>> Curl error (28): Timeout was reached for http://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/g/git-core-2.56.1-1.fc44.x86_64.rpm [Connection timed out after 30000 milliseconds] - http://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/g/git-core-2.56.1-1.fc44.x86_64.rpm
+[18/98] perl-Error-1:0.17030-3.fc44.noa 100% |   1.7 MiB/s |  40.3 KiB |  00m00s
+[19/98] perl-Pod-Perldoc-0:3.28.01-522. 100% |   2.8 MiB/s |  86.1 KiB |  00m00s
+[20/98] groff-base-0:1.23.0-12.fc44.x86 100% |  12.8 MiB/s |   1.1 MiB |  00m00s
+[21/98] perl-File-Temp-1:0.231.200-2.fc 100% |   3.1 MiB/s |  59.6 KiB |  00m00s
+[22/98] perl-Pod-Simple-1:3.47-4.fc44.n 100% |   9.8 MiB/s | 220.0 KiB |  00m00s
+[23/98] perl-parent-1:0.244-521.fc44.no 100% | 783.2 KiB/s |  14.9 KiB |  00m00s
+[24/98] perl-Git-0:2.56.1-1.fc44.noarch 100% |  20.8 KiB/s |  37.5 KiB |  00m02s
+>>> Curl error (7): Could not connect to server for https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/p/perl-Git-2.56.1-1.fc44.noarch.rpm [Failed to connect to fedora.ip-connect.vn.ua port 443 after 1694 ms: Could not connect to server] - https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/p/perl-Git-2.56.1-1.fc44.noarch.rpm
+[25/98] perl-File-Path-0:2.18-522.fc44. 100% |   1.8 MiB/s |  35.3 KiB |  00m00s
+[26/98] perl-Text-Tabs+Wrap-0:2024.001- 100% |   1.2 MiB/s |  21.8 KiB |  00m00s
+[27/98] perl-Pod-Escapes-1:1.07-521.fc4 100% | 335.4 KiB/s |  19.8 KiB |  00m00s
+[28/98] procps-ng-0:4.0.6-1.fc44.x86_64 100% |  10.3 MiB/s | 398.9 KiB |  00m00s
+[29/98] python3-0:3.14.10-1.fc44.x86_64 100% | 536.9 KiB/s |  29.5 KiB |  00m00s
+[30/98] ripgrep-0:15.2.0-1.fc44.x86_64  100% |   4.4 MiB/s |   1.5 MiB |  00m00s
+[31/98] mpdecimal-0:4.0.1-3.fc44.x86_64 100% |   4.6 MiB/s |  99.1 KiB |  00m00s
+[32/98] python-pip-wheel-0:26.0.1-3.fc4 100% |   6.2 MiB/s |   1.1 MiB |  00m00s
+[33/98] perl-libs-4:5.42.3-525.fc44.x86 100% |   6.5 MiB/s |   2.6 MiB |  00m00s
+[34/98] perl-interpreter-4:5.42.3-525.f 100% |   1.2 MiB/s |  71.7 KiB |  00m00s
+[35/98] perl-Errno-0:1.38-525.fc44.x86_ 100% | 250.0 KiB/s |  14.3 KiB |  00m00s
+[36/98] less-0:710-2.fc44.x86_64        100% |   3.8 MiB/s | 231.6 KiB |  00m00s
+[37/98] openssh-clients-0:10.2p1-16.fc4 100% |   6.2 MiB/s | 778.5 KiB |  00m00s
+[38/98] openssh-0:10.2p1-16.fc44.x86_64 100% |   5.8 MiB/s | 355.9 KiB |  00m00s
+[39/98] perl-File-Basename-0:2.86-525.f 100% | 305.3 KiB/s |  16.5 KiB |  00m00s
+[40/98] perl-IPC-Open3-0:1.24-525.fc44. 100% | 430.2 KiB/s |  23.2 KiB |  00m00s
+[41/98] perl-lib-0:0.65-525.fc44.x86_64 100% | 263.7 KiB/s |  14.2 KiB |  00m00s
+[42/98] perl-DynaLoader-0:1.57-525.fc44 100% | 460.1 KiB/s |  25.3 KiB |  00m00s
+[43/98] perl-vars-0:1.05-525.fc44.noarc 100% | 227.6 KiB/s |  12.3 KiB |  00m00s
+[44/98] perl-podlators-1:6.0.2-522.fc44 100% |   2.2 MiB/s | 128.2 KiB |  00m00s
+[45/98] perl-Term-ANSIColor-0:5.01-522. 100% |   2.5 MiB/s |  47.7 KiB |  00m00s
+[46/98] perl-Term-Cap-0:1.18-521.fc44.n 100% |   1.1 MiB/s |  22.0 KiB |  00m00s
+[47/98] ncurses-0:6.6-1.fc44.x86_64     100% |  14.5 MiB/s | 429.8 KiB |  00m00s
+[48/98] perl-Encode-4:3.21-521.fc44.x86 100% |  28.4 MiB/s |   1.1 MiB |  00m00s
+[49/98] perl-MIME-Base64-0:3.16-521.fc4 100% |   1.5 MiB/s |  29.8 KiB |  00m00s
+[50/98] perl-Storable-1:3.37-522.fc44.x 100% |   4.5 MiB/s | 100.9 KiB |  00m00s
+[51/98] perl-Symbol-0:1.09-525.fc44.noa 100% | 250.2 KiB/s |  13.5 KiB |  00m00s
+[52/98] perl-if-0:0.61.000-525.fc44.noa 100% | 246.4 KiB/s |  13.3 KiB |  00m00s
+[53/98] perl-overload-0:1.40-525.fc44.n 100% | 815.7 KiB/s |  44.9 KiB |  00m00s
+[54/98] perl-Fcntl-0:1.20-525.fc44.x86_ 100% | 518.9 KiB/s |  29.1 KiB |  00m00s
+[55/98] perl-HTTP-Tiny-0:0.096-1.fc44.n 100% |   1.0 MiB/s |  57.8 KiB |  00m00s
+[56/98] perl-IO-Socket-SSL-0:2.098-2.fc 100% |  10.4 MiB/s | 234.7 KiB |  00m00s
+[57/98] perl-Net-SSLeay-0:1.94-12.fc44. 100% |  14.6 MiB/s | 373.4 KiB |  00m00s
+[58/98] perl-Time-HiRes-4:1.9778-521.fc 100% |   2.8 MiB/s |  57.2 KiB |  00m00s
+[59/98] perl-Time-Local-2:1.350-521.fc4 100% |   1.9 MiB/s |  34.5 KiB |  00m00s
+[60/98] perl-IO-Socket-IP-0:0.43-522.fc 100% |   2.3 MiB/s |  42.2 KiB |  00m00s
+[61/98] perl-IO-0:1.55-525.fc44.x86_64  100% |   1.4 MiB/s |  81.5 KiB |  00m00s
+[62/98] perl-AutoLoader-0:5.74-525.fc44 100% | 366.9 KiB/s |  20.5 KiB |  00m00s
+[63/98] perl-Socket-4:2.043-1.fc44.x86_ 100% | 989.5 KiB/s |  55.4 KiB |  00m00s
+[64/98] perl-URI-0:5.36-1.fc44.noarch   100% |   2.6 MiB/s | 149.3 KiB |  00m00s
+[65/98] perl-MIME-Base32-0:1.303-25.fc4 100% |   1.1 MiB/s |  20.5 KiB |  00m00s
+[66/98] perl-Unicode-Normalize-0:1.32-5 100% |   3.8 MiB/s |  74.4 KiB |  00m00s
+[67/98] perl-POSIX-0:2.23-525.fc44.x86_ 100% |   1.7 MiB/s |  96.3 KiB |  00m00s
+[68/98] python3-libs-0:3.14.10-1.fc44.x 100% |   4.3 MiB/s |  10.2 MiB |  00m02s
+[69/98] perl-base-0:2.27-525.fc44.noarc 100% | 282.3 KiB/s |  15.5 KiB |  00m00s
+[70/98] perl-Getopt-Std-0:1.14-525.fc44 100% | 272.7 KiB/s |  15.0 KiB |  00m00s
+[71/98] perl-mro-0:1.29-525.fc44.x86_64 100% | 529.5 KiB/s |  29.1 KiB |  00m00s
+[72/98] perl-overloading-0:0.02-525.fc4 100% | 222.0 KiB/s |  12.2 KiB |  00m00s
+[73/98] perl-Data-Dumper-0:2.192-523.fc 100% |   1.0 MiB/s |  56.3 KiB |  00m00s
+[74/98] perl-Digest-MD5-0:2.59-521.fc44 100% |   2.0 MiB/s |  36.0 KiB |  00m00s
+[75/98] perl-libnet-0:3.16-1.fc44.noarc 100% |   2.2 MiB/s | 129.0 KiB |  00m00s
+[76/98] perl-Digest-0:1.20-521.fc44.noa 100% |   1.3 MiB/s |  24.9 KiB |  00m00s
+[77/98] perl-locale-0:1.13-525.fc44.noa 100% | 237.2 KiB/s |  12.8 KiB |  00m00s
+[78/98] perl-File-stat-0:1.14-525.fc44. 100% | 303.0 KiB/s |  16.4 KiB |  00m00s
+[79/98] perl-SelectSaver-0:1.02-525.fc4 100% | 204.3 KiB/s |  11.0 KiB |  00m00s
+[80/98] perl-Class-Struct-0:0.68-525.fc 100% | 382.0 KiB/s |  21.4 KiB |  00m00s
+[81/98] perl-B-0:1.89-525.fc44.x86_64   100% |   3.0 MiB/s | 177.1 KiB |  00m00s
+[82/98] libedit-0:3.1-59.20260512cvs.fc 100% |   1.9 MiB/s | 110.4 KiB |  00m00s
+[83/98] libfdisk-0:2.41.6-1.fc44.x86_64 100% |   2.9 MiB/s | 168.8 KiB |  00m00s
+[84/98] liblastlog2-0:2.41.6-1.fc44.x86 100% | 452.2 KiB/s |  24.4 KiB |  00m00s
+[85/98] perl-FileHandle-0:2.05-525.fc44 100% | 269.2 KiB/s |  14.8 KiB |  00m00s
+[86/98] util-linux-0:2.41.6-1.fc44.x86_ 100% |   5.4 MiB/s |   1.2 MiB |  00m00s
+[87/98] python-unversioned-command-0:3. 100% | 216.7 KiB/s |  11.7 KiB |  00m00s
+[88/98] unzip-0:6.0-69.fc44.x86_64      100% |   8.5 MiB/s | 199.6 KiB |  00m00s
+[89/98] perl-NDBM_File-0:1.18-525.fc44. 100% | 389.8 KiB/s |  21.8 KiB |  00m00s
+[90/98] python3-html2text-0:2025.4.15-6 100% |   4.0 MiB/s |  81.7 KiB |  00m00s
+[91/98] less-color-0:710-2.fc44.x86_64  100% | 205.5 KiB/s |  10.9 KiB |  00m00s
+[92/98] 7zip-0:26.04-1.fc44.x86_64      100% |   4.5 MiB/s |   1.3 MiB |  00m00s
+[93/98] oniguruma-0:6.9.10-4.fc44.x86_6 100% |   9.8 MiB/s | 220.0 KiB |  00m00s
+[94/98] libgit2-0:1.9.7-1.fc44.x86_64   100% |   3.6 MiB/s | 614.5 KiB |  00m00s
+[95/98] bat-0:0.26.1-4.fc44.x86_64      100% |   6.3 MiB/s |   2.5 MiB |  00m00s
+[96/98] llhttp-0:9.3.1-1.fc44.x86_64    100% |   2.1 MiB/s |  37.8 KiB |  00m00s
+[97/98] libssh2-0:1.11.1-9.fc44.x86_64  100% |   2.6 MiB/s | 149.1 KiB |  00m00s
+[98/98] expat-0:2.9.0-1.fc44.x86_64     100% |   4.5 KiB/s | 136.0 KiB |  00m30s
+>>> Curl error (28): Timeout was reached for https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/e/expat-2.9.0-1.fc44.x86_64.rpm [Connection timed out after 30000 milliseconds] - https://fedora.ip-connect.vn.ua/linux/updates/44/Everything/x86_64/Packages/e/expat-2.9.0-1.fc44.x86_64.rpm
+--------------------------------------------------------------------------------
+[98/98] Total                           100% | 538.2 KiB/s |  42.7 MiB |  01m21s
+Running transaction
+[  1/100] Verify package files          100% | 695.0   B/s |  98.0   B |  00m00s
+[  2/100] Prepare transaction           100% |   1.6 KiB/s |  98.0   B |  00m00s
+[  3/100] Installing less-0:710-2.fc44. 100% |  30.0 MiB/s | 492.0 KiB |  00m00s
+[  4/100] Installing expat-0:2.9.0-1.fc 100% |  26.4 MiB/s | 351.7 KiB |  00m00s
+[  5/100] Installing libssh2-0:1.11.1-9 100% | 166.1 MiB/s | 340.2 KiB |  00m00s
+[  6/100] Installing llhttp-0:9.3.1-1.f 100% |  95.7 MiB/s |  98.0 KiB |  00m00s
+[  7/100] Installing libgit2-0:1.9.7-1. 100% | 280.0 MiB/s |   1.4 MiB |  00m00s
+[  8/100] Installing oniguruma-0:6.9.10 100% | 251.6 MiB/s | 773.1 KiB |  00m00s
+[  9/100] Installing liblastlog2-0:2.41 100% |   2.5 MiB/s |  43.8 KiB |  00m00s
+[ 10/100] Installing libfdisk-0:2.41.6- 100% | 126.8 MiB/s | 389.4 KiB |  00m00s
+[ 11/100] Installing util-linux-0:2.41. 100% |  66.4 MiB/s |   3.6 MiB |  00m00s
+[ 12/100] Installing openssh-0:10.2p1-1 100% | 110.2 MiB/s |   1.4 MiB |  00m00s
+[ 13/100] Installing libedit-0:3.1-59.2 100% | 122.0 MiB/s | 250.0 KiB |  00m00s
+[ 14/100] Installing openssh-clients-0: 100% |  81.5 MiB/s |   2.7 MiB |  00m00s
+[ 15/100] Installing git-core-0:2.56.1- 100% | 390.8 MiB/s |  27.7 MiB |  00m00s
+[ 16/100] Installing git-core-doc-0:2.5 100% |   1.0 GiB/s |  19.3 MiB |  00m00s
+[ 17/100] Installing ncurses-0:6.6-1.fc 100% |  46.4 MiB/s | 618.0 KiB |  00m00s
+[ 18/100] Installing python-pip-wheel-0 100% | 611.8 MiB/s |   1.2 MiB |  00m00s
+[ 19/100] Installing mpdecimal-0:4.0.1- 100% |  35.6 MiB/s | 218.6 KiB |  00m00s
+[ 20/100] Installing python3-libs-0:3.1 100% | 203.5 MiB/s |  44.6 MiB |  00m00s
+[ 21/100] Installing python3-0:3.14.10- 100% |   1.1 MiB/s |  30.4 KiB |  00m00s
+[ 22/100] Installing groff-base-0:1.23. 100% |  86.5 MiB/s |   3.9 MiB |  00m00s
+[ 23/100] Installing perl-Digest-0:1.20 100% |  36.2 MiB/s |  37.1 KiB |  00m00s
+[ 24/100] Installing perl-FileHandle-0: 100% |   0.0   B/s |   9.8 KiB |  00m00s
+[ 25/100] Installing perl-B-0:1.89-525. 100% | 246.3 MiB/s | 504.4 KiB |  00m00s
+[ 26/100] Installing perl-Digest-MD5-0: 100% |  60.0 MiB/s |  61.5 KiB |  00m00s
+[ 27/100] Installing perl-libnet-0:3.16 100% | 145.9 MiB/s | 298.8 KiB |  00m00s
+[ 28/100] Installing perl-Data-Dumper-0 100% | 114.7 MiB/s | 117.4 KiB |  00m00s
+[ 29/100] Installing perl-Unicode-Norma 100% | 238.4 MiB/s | 488.3 KiB |  00m00s
+[ 30/100] Installing perl-MIME-Base32-0 100% |  31.4 MiB/s |  32.2 KiB |  00m00s
+[ 31/100] Installing perl-URI-0:5.36-1. 100% |  56.5 MiB/s | 289.5 KiB |  00m00s
+[ 32/100] Installing perl-IO-Socket-IP- 100% |  99.8 MiB/s | 102.2 KiB |  00m00s
+[ 33/100] Installing perl-AutoLoader-0: 100% |   0.0   B/s |  21.0 KiB |  00m00s
+[ 34/100] Installing perl-IO-Socket-SSL 100% | 355.3 MiB/s | 727.6 KiB |  00m00s
+[ 35/100] Installing perl-locale-0:1.13 100% |   0.0   B/s |   6.5 KiB |  00m00s
+[ 36/100] Installing perl-Net-SSLeay-0: 100% | 168.4 MiB/s |   1.3 MiB |  00m00s
+[ 37/100] Installing perl-Time-Local-2: 100% |  68.9 MiB/s |  70.6 KiB |  00m00s
+[ 38/100] Installing perl-Time-HiRes-4: 100% | 114.9 MiB/s | 117.7 KiB |  00m00s
+[ 39/100] Installing perl-if-0:0.61.000 100% |   0.0   B/s |   6.2 KiB |  00m00s
+[ 40/100] Installing perl-Pod-Escapes-1 100% |   0.0   B/s |  25.9 KiB |  00m00s
+[ 41/100] Installing perl-File-Path-0:2 100% |   0.0   B/s |  64.5 KiB |  00m00s
+[ 42/100] Installing perl-Text-Tabs+Wra 100% |  23.3 MiB/s |  23.9 KiB |  00m00s
+[ 43/100] Installing perl-HTTP-Tiny-0:0 100% | 160.6 MiB/s | 164.5 KiB |  00m00s
+[ 44/100] Installing perl-Class-Struct- 100% |   0.0   B/s |  25.9 KiB |  00m00s
+[ 45/100] Installing perl-IPC-Open3-0:1 100% |   0.0   B/s |  28.5 KiB |  00m00s
+[ 46/100] Installing perl-File-Temp-1:0 100% | 161.6 MiB/s | 165.5 KiB |  00m00s
+[ 47/100] Installing perl-POSIX-0:2.23- 100% | 112.6 MiB/s | 230.6 KiB |  00m00s
+[ 48/100] Installing perl-Pod-Simple-1: 100% | 187.1 MiB/s | 574.9 KiB |  00m00s
+[ 49/100] Installing perl-Term-Cap-0:1. 100% |   0.0   B/s |  30.6 KiB |  00m00s
+[ 50/100] Installing perl-Term-ANSIColo 100% |  96.9 MiB/s |  99.2 KiB |  00m00s
+[ 51/100] Installing perl-Pod-Perldoc-0 100% |  11.8 MiB/s | 169.2 KiB |  00m00s
+[ 52/100] Installing perl-podlators-1:6 100% |  24.2 MiB/s | 321.7 KiB |  00m00s
+[ 53/100] Installing perl-File-stat-0:1 100% |   0.0   B/s |  13.1 KiB |  00m00s
+[ 54/100] Installing perl-SelectSaver-0 100% |   0.0   B/s |   2.6 KiB |  00m00s
+[ 55/100] Installing perl-Socket-4:2.04 100% | 120.9 MiB/s | 123.8 KiB |  00m00s
+[ 56/100] Installing perl-Symbol-0:1.09 100% |   0.0   B/s |   7.3 KiB |  00m00s
+[ 57/100] Installing perl-Pod-Usage-4:2 100% |   7.2 MiB/s |  87.9 KiB |  00m00s
+[ 58/100] Installing perl-IO-0:1.55-525 100% |  74.0 MiB/s | 151.5 KiB |  00m00s
+[ 59/100] Installing perl-overloading-0 100% |   0.0   B/s |   5.6 KiB |  00m00s
+[ 60/100] Installing perl-mro-0:1.29-52 100% |  41.5 MiB/s |  42.5 KiB |  00m00s
+[ 61/100] Installing perl-base-0:2.27-5 100% |   0.0   B/s |  13.0 KiB |  00m00s
+[ 62/100] Installing perl-Fcntl-0:1.20- 100% |  48.6 MiB/s |  49.8 KiB |  00m00s
+[ 63/100] Installing perl-Text-ParseWor 100% |   0.0   B/s |  14.6 KiB |  00m00s
+[ 64/100] Installing perl-Getopt-Long-1 100% | 143.8 MiB/s | 147.2 KiB |  00m00s
+[ 65/100] Installing perl-Storable-1:3. 100% | 115.6 MiB/s | 236.7 KiB |  00m00s
+[ 66/100] Installing perl-overload-0:1. 100% |   0.0   B/s |  72.0 KiB |  00m00s
+[ 67/100] Installing perl-Getopt-Std-0: 100% |   0.0   B/s |  11.8 KiB |  00m00s
+[ 68/100] Installing perl-MIME-Base64-0 100% |  43.1 MiB/s |  44.2 KiB |  00m00s
+[ 69/100] Installing perl-vars-0:1.05-5 100% |   0.0   B/s |   4.3 KiB |  00m00s
+[ 70/100] Installing perl-File-Basename 100% |   0.0   B/s |  14.6 KiB |  00m00s
+[ 71/100] Installing perl-Errno-0:1.38- 100% |   0.0   B/s |   8.8 KiB |  00m00s
+[ 72/100] Installing perl-parent-1:0.24 100% |   0.0   B/s |  11.0 KiB |  00m00s
+[ 73/100] Installing perl-Scalar-List-U 100% |  72.5 MiB/s | 148.5 KiB |  00m00s
+[ 74/100] Installing perl-constant-0:1. 100% |  26.7 MiB/s |  27.4 KiB |  00m00s
+[ 75/100] Installing perl-Encode-4:3.21 100% | 187.7 MiB/s |   4.7 MiB |  00m00s
+[ 76/100] Installing perl-DynaLoader-0: 100% |  31.7 MiB/s |  32.5 KiB |  00m00s
+[ 77/100] Installing perl-PathTools-0:3 100% |  45.0 MiB/s | 184.4 KiB |  00m00s
+[ 78/100] Installing perl-Carp-0:1.54-5 100% |   4.7 MiB/s |  47.7 KiB |  00m00s
+[ 79/100] Installing perl-Exporter-0:5. 100% |  13.6 MiB/s |  55.6 KiB |  00m00s
+[ 80/100] Installing perl-libs-4:5.42.3 100% | 162.2 MiB/s |  11.7 MiB |  00m00s
+[ 81/100] Installing perl-interpreter-4 100% |   8.4 MiB/s | 120.5 KiB |  00m00s
+[ 82/100] Installing perl-TermReadKey-0 100% |  21.5 MiB/s |  66.1 KiB |  00m00s
+[ 83/100] Installing perl-Error-1:0.170 100% |  39.0 MiB/s |  80.0 KiB |  00m00s
+[ 84/100] Installing perl-lib-0:0.65-52 100% |   8.7 MiB/s |   8.9 KiB |  00m00s
+[ 85/100] Installing git-0:2.56.1-1.fc4 100% |  57.6 MiB/s |  59.0 KiB |  00m00s
+[ 86/100] Installing perl-Git-0:2.56.1- 100% |  63.8 MiB/s |  65.4 KiB |  00m00s
+[ 87/100] Installing ed-0:1.22.5-2.fc44 100% |   9.3 MiB/s | 152.0 KiB |  00m00s
+[ 88/100] Installing numactl-libs-0:2.0 100% |  28.2 MiB/s |  57.7 KiB |  00m00s
+[ 89/100] Installing ShellCheck-0:0.11. 100% | 414.5 MiB/s |  22.4 MiB |  00m00s
+[ 90/100] Installing patch-0:2.8-4.fc44 100% |  14.8 MiB/s | 228.1 KiB |  00m00s
+[ 91/100] Installing perl-NDBM_File-0:1 100% |  14.4 MiB/s |  29.5 KiB |  00m00s
+[ 92/100] Installing python-unversioned 100% |  37.6 KiB/s | 424.0   B |  00m00s
+[ 93/100] Installing python3-html2text- 100% |  20.8 MiB/s | 297.9 KiB |  00m00s
+[ 94/100] Installing bat-0:0.26.1-4.fc4 100% | 203.4 MiB/s |   5.3 MiB |  00m00s
+[ 95/100] Installing less-color-0:710-2 100% | 221.0 KiB/s |   2.7 KiB |  00m00s
+[ 96/100] Installing 7zip-0:26.04-1.fc4 100% | 176.4 MiB/s |   3.4 MiB |  00m00s
+[ 97/100] Installing unzip-0:6.0-69.fc4 100% |  31.3 MiB/s | 449.3 KiB |  00m00s
+[ 98/100] Installing procps-ng-0:4.0.6- 100% |  61.1 MiB/s |   1.1 MiB |  00m00s
+[ 99/100] Installing ripgrep-0:15.2.0-1 100% | 168.8 MiB/s |   4.6 MiB |  00m00s
+[100/100] Installing diffutils-0:3.12-5 100% |  15.0 MiB/s |   1.6 MiB |  00m00s
+Complete!
+Removed 18 files, 11 directories (total of 107 MiB). 0 errors occurred.
+--> e752c75bcf3a
+STEP 4/21: COPY rules/ /etc/claude-code/
+--> 7885d882194b
+STEP 5/21: COPY managed-settings.json /etc/claude-code/
+--> d4b216d3af30
+STEP 6/21: RUN chmod 644 /etc/claude-code/* && mkdir -p /etc/claude-code/managed-settings.d
+--> ad659e0b9c47
+STEP 7/21: COPY bin/stage-seed /usr/local/bin/stage-seed
+--> d958a3fe7818
+STEP 8/21: COPY plugin/box-workflow /usr/local/share/claude-box/plugins/box-workflow
+--> 55127e0537cd
+STEP 9/21: COPY bin/run-actions /usr/local/bin/run-actions
+--> 61364f13e116
+STEP 10/21: COPY bin/no-commit-on-main /usr/local/bin/no-commit-on-main
+--> a489404ba921
+STEP 11/21: ENV CLAUDE_CODE_PLUGIN_DIRS=/usr/local/share/claude-box/plugins/box-workflow
+--> 7f7e4b121636
+STEP 12/21: RUN useradd -m -u 1000 claude
+--> ecc25a8bf924
+STEP 13/21: USER claude
+--> 789a49d78d32
+STEP 14/21: ARG CLAUDE_BUILD
+--> aa7971c9609d
+STEP 15/21: RUN set -o pipefail; echo "build $CLAUDE_BUILD"; curl -fsSL https://claude.ai/install.sh | bash
+build 1794748099
+Setting up Claude Code...
+
+Checking installation status...
+Installing Claude Code native build latest...
+Setting up launcher and shell integration...
+✔ Claude Code successfully installed!
+
+  Version: 2.1.325
+
+  Location: ~/.local/bin/claude
+
+
+  Next: Run claude --help to get started
+
+⚠ Setup notes:
+  ● Native installation exists but ~/.local/bin is not in your PATH. Run:
+
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >> your shell config file && source your shell config file
+
+
+✅ Installation complete!
+
+--> 139e39c13a11
+STEP 16/21: USER root
+--> 02565275775d
+STEP 17/21: RUN install -m 755 "$(readlink -f /home/claude/.local/bin/claude)" /usr/local/bin/claude     && rm -rf /home/claude/.local/bin/claude /home/claude/.local/share/claude     && git config --system user.name Claude     && git config --system user.email claude@claude-box.invalid
+--> 008f4f79c1e1
+STEP 18/21: USER claude
+--> 2768d19669b4
+STEP 19/21: ENV DISABLE_AUTOUPDATER=1
+--> 21e559d345c6
+STEP 20/21: WORKDIR /work
+--> 560b6d1eb309
+STEP 21/21: LABEL "claude-box.core"="eef66c025ea131d9e731bd79d099c3b0ccb2f444" "claude-box.commit"="0ba281476cc209b5b25316263723dddcc7ec92cc"
+COMMIT localhost/claude-box
+--> 803aa3fddf2e
+Successfully tagged localhost/claude-box:latest
+803aa3fddf2e891897267a11cf3e26db57516d966f79c634c0ea6180cd6f5676
+
+Log Claude in: open the URL it shows in your browser, then type /exit.
+Error: Input must be provided either through stdin or as a prompt argument when using --print
+
+Ready. New project: dev new <name>   Existing one: cd into it, then dev claude
+CONF-BEGIN
+identity Claude <claude@claude-box.invalid>
+plugin workflow
+autotake group
+CONF-END
+y
+claude --version
+git config --system user.email
+exit
+Your config (~/.claude/.dev) differs from the one you approved last:
+  diff -ruNa approved/.dev yours/.dev
+  --- approved/.dev	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/.dev	2026-11-15 14:11:15.577959556 +0100
+  @@ -0,0 +1,11 @@
+  +# What's in every box. Every kind, with examples: /var/home/cbtest/claude-box/core/defaults.dev
+  +# One "<kind> <value>" per line; dev shows each change and applies it after you say yes.
+  +
+  +# The name and email on Claude's commits.
+  +identity Claude <claude@claude-box.invalid>
+  +
+  +# The workflow: documents in three families, specs and plans, the closing skill.
+  +plugin workflow
+  +
+  +# Messages from your sessions of your group's projects go on as your prompt; delete to hold them.
+  +autotake group
+  diff -ruNa approved/plugins/workflow/.claude-plugin/plugin.json yours/plugins/workflow/.claude-plugin/plugin.json
+  --- approved/plugins/workflow/.claude-plugin/plugin.json	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/.claude-plugin/plugin.json	2026-11-15 14:11:15.609345515 +0100
+  @@ -0,0 +1,11 @@
+  +{
+  +  "name": "workflow",
+  +  "version": "0.2.0",
+  +  "description": "A way of working: documents in three families, specs and plans, the closing skill",
+  +  "dependencies": ["superpowers@superpowers-marketplace"],
+  +  "metadata": {
+  +    "claude-box": {
+  +      "marketplaces": { "superpowers-marketplace": "obra/superpowers-marketplace" }
+  +    }
+  +  }
+  +}
+  diff -ruNa approved/plugins/workflow/README.md yours/plugins/workflow/README.md
+  --- approved/plugins/workflow/README.md	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/README.md	2026-11-15 14:11:15.609377182 +0100
+  @@ -0,0 +1,22 @@
+  +# workflow
+  +
+  +An ordinary, optional Claude Code plugin: the way this repo itself is
+  +run. Documents come in three families (direction, change, system),
+  +superpowers writes a change's spec and plans, and a closing skill
+  +prepares a milestone's last branch and run. Bring it in with
+  +`plugin workflow` in `~/.claude/.dev`; leave it out and plan your own
+  +way. It brings [superpowers](https://github.com/obra/superpowers),
+  +which `dev` builds into the image with it.
+  +
+  +## Map
+  +
+  +| Part | What it is | Where it lands |
+  +|---|---|---|
+  +| [.claude-plugin/plugin.json](.claude-plugin/plugin.json) | The plugin's name, its dependency on superpowers, and that marketplace's repo | Read by Claude Code and `dev` |
+  +| [rules/documentation.md](rules/documentation.md) | The three families of documents, and where each fact lives | Read-only at `~/.claude/rules/workflow/`, read at every start |
+  +| [rules/specs-and-plans.md](rules/specs-and-plans.md) | Where superpowers writes a change's documents | The same |
+  +| [rules/markdown.md](rules/markdown.md) | Links and Mermaid diagrams in Markdown, and the link check an existing project copies from the starter | The same |
+  +| [rules/claude-md.md](rules/claude-md.md) | The sections of a project's `CLAUDE.md`, read only when Claude reads or edits one | The same, path-scoped |
+  +| [skills/sizes-of-change/](skills/sizes-of-change/SKILL.md) | `workflow:sizes-of-change`: one PR or an intent, and an intent's steps, loaded when a change starts | Built into the image, loaded by every session |
+  +| [skills/closing/](skills/closing/SKILL.md) | `workflow:closing`: one branch with everything a milestone owes, one `dev run` that merges, tags and pushes | Built into the image, loaded by every session |
+  +| [starter/](starter/) | A new project's first files: `CLAUDE.md`, the backlog, architecture and runbook pages, `docs/change/`, `tests/run.sh` with the link check, `.gitignore` | Laid down by `dev new` |
+  diff -ruNa approved/plugins/workflow/rules/claude-md.md yours/plugins/workflow/rules/claude-md.md
+  --- approved/plugins/workflow/rules/claude-md.md	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/rules/claude-md.md	2026-11-15 14:11:15.609399167 +0100
+  @@ -0,0 +1,14 @@
+  +---
+  +paths:
+  +  - "**/CLAUDE.md"
+  +  - ".claude/rules/**"
+  +  - "out/**/*CLAUDE*.md"
+  +---
+  +
+  +# A project's CLAUDE.md
+  +
+  +Where each fact goes is core's levels rule. A project's `CLAUDE.md` has
+  +these sections, in this order: a first paragraph saying what the project
+  +owns; Start of a session; Commands; Rules; Neighbours' interfaces. Its
+  +Rules section holds the project's own rules and its "Differs from the
+  +default" lines.
+  diff -ruNa approved/plugins/workflow/rules/documentation.md yours/plugins/workflow/rules/documentation.md
+  --- approved/plugins/workflow/rules/documentation.md	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/rules/documentation.md	2026-11-15 14:11:15.609419368 +0100
+  @@ -0,0 +1,55 @@
+  +# Documentation: three families
+  +
+  +Every document in a project belongs to exactly one family. Work flows
+  +direction ??? change ??? system; findings about the system flow back into
+  +direction. A project creates a family's documents only when it needs
+  +them.
+  +
+  +| Family | Answers | Standard | Documents | Lifetime |
+  +|---|---|---|---|---|
+  +| **Direction** | Where are we going, what's next? | Product management | Product vision (long term); product backlog: an ordered queue, the only place with status | Living: reordered, items leave when done |
+  +| **Change** | What was asked, decided and done for one change? | The AI-native SDLC playbook (claude.com/blog/the-ai-native-sdlc-playbook) | Intent, spec, plan, then the PR; findings from reviews and research; the operations log (append-only, one entry per run applied to a running system) | Point in time: a record once written, never edited again |
+  +| **System** | What is, right now? | C4 (Simon Brown's), plus a runbook | The C4 views with their element tables, the decisions that cut across them; the runbook | Living: always what's built (planned elements dashed) |
+  +
+  +In the system family:
+  +
+  +- **C4 views:** system context, container, and deployment; a component
+  +  view for a container whose parts others rely on. Every view has an
+  +  element table below its diagram. A fact about an element (what it
+  +  runs as, its credentials, its data, who reaches it) goes into that
+  +  table or another table below the diagram keyed by element, never a
+  +  separate document. A component groups related parts behind one
+  +  interface; it isn't a file. The code level stays undrawn.
+  +- **Runbook:** the one thing C4 doesn't cover: step-by-step procedures
+  +  to run, change and recover the system. Steps only; facts are linked
+  +  to the views.
+  +
+  +## Rules
+  +
+  +- **A fact's family decides its home.** Status only in the backlog; what
+  +  was decided for one change only in its spec; what is only in the
+  +  system docs. Link from anywhere else, never copy.
+  +- **Terms come from the family's standard**, named as that standard
+  +  names them. No analogies between standards ("the architecture is the
+  +  high-level spec"). Where no standard has a term, say it's our own.
+  +- **Outcomes aren't deliverables.** An outcome (a goal) is what's
+  +  different for the human once it's done, checked by acceptance
+  +  criteria; a deliverable is what gets built to get there. The vision,
+  +  backlog items and intents state outcomes; specs and plans list
+  +  deliverables. A backlog item that names a deliverable instead of an
+  +  outcome is rewritten, or moves into a spec.
+  +- **The backlog is ordered by milestones**, each an outcome with
+  +  acceptance criteria. A milestone becomes an intent when it starts; its
+  +  criteria are the intent's outcome. Phases and steps belong in plans.
+  +- **Records stay as written.** Only link targets change, when files move.
+  +  No "superseded" banners: the later spec says what it replaces. Every
+  +  open finding in a record ends up in exactly one place: done (linked),
+  +  the backlog, a spec, an accepted risk in the system docs, or another
+  +  system's (listed in the backlog as handed over). An intent's acceptance
+  +  checks that none is left only in a record.
+  +- **Something that doesn't fit** gets placed in its family, not a new
+  +  kind of document.
+  +- **The branch that builds a change updates the system docs** (the C4
+  +  views and their element tables, the runbook). The spec stays as its record.
+  +- **A change's size** (one PR or an intent) and its steps: the
+  +  `workflow:sizes-of-change` skill.
+  diff -ruNa approved/plugins/workflow/rules/markdown.md yours/plugins/workflow/rules/markdown.md
+  --- approved/plugins/workflow/rules/markdown.md	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/rules/markdown.md	2026-11-15 14:11:15.609433182 +0100
+  @@ -0,0 +1,26 @@
+  +# Markdown files
+  +
+  +- Write references to files, folders and sections as clickable links, not
+  +  bare code spans: `[phase0/README.md](../phase0/README.md)`, or
+  +  `[Deploy](../docs/brief.md#deploy)` for a heading.
+  +- Paths are relative to the Markdown file that contains the link, so they
+  +  work in editors and on git hosts alike. Check that each target exists.
+  +- A project with Markdown docs checks its links in its test run: every
+  +  relative link and `#anchor` resolves (the workflow
+  +  plugin's starter `tests/check_links.py`, standard library only). A
+  +  project that adopts the plugin copies it once, on a `claude/` branch,
+  +  from `/usr/local/share/claude-box/plugins/workflow/starter/tests/`.
+  +- Commands, file contents and paths that aren't meant to be opened stay in
+  +  code spans or code blocks.
+  +- Draw diagrams as Mermaid code blocks, in the subset the owner's preview
+  +  renders: `flowchart` only (no C4 or other experimental syntax, no
+  +  `%%{init}%%` or config front matter). Keep them small:
+  +  - at most about 10???12 boxes per diagram; split bigger views into several
+  +    diagrams, one per topic;
+  +  - an arrow points from the side that starts it (the request, the
+  +    connection, the action), and "from ??? label ??? to" reads as a
+  +    sentence; data may flow both ways, the arrow says who starts;
+  +  - short arrow labels ("purpose [protocol]", e.g. "sends model
+  +    requests to [HTTPS]"), full descriptions in a table below the
+  +    diagram.
+  +- Only a very large picture that can't be split sensibly may be ASCII art.
+  diff -ruNa approved/plugins/workflow/rules/specs-and-plans.md yours/plugins/workflow/rules/specs-and-plans.md
+  --- approved/plugins/workflow/rules/specs-and-plans.md	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/rules/specs-and-plans.md	2026-11-15 14:11:15.609448294 +0100
+  @@ -0,0 +1,16 @@
+  +# Specs and plans (superpowers)
+  +
+  +The superpowers plugin, enabled for every project, writes a change's
+  +documents: brainstorming the spec, writing-plans the plans,
+  +executing-plans or subagent-driven-development the build. Unless a
+  +project says otherwise, `docs/` holds one folder per family:
+  +`direction/` (`vision.md`, `backlog.md`), `change/` and `system/`
+  +(`architecture/` for the C4 views, `runbook.md`). Under `change/`, one
+  +folder per change, `YYYY-MM-DD-<topic>/`, holds all its records:
+  +`intent.md`, `spec.md`, one `plan-<topic>.md` per branch, the findings
+  +that fed it, its scripts; this replaces superpowers' default paths. A
+  +finding that served no single change gets its own dated folder; the
+  +operations log, `operations-log.md`, sits at the top of `change/`.
+  +Plans keep superpowers' checkbox format but aren't ticked: progress
+  +shows in the commits and the backlog's status. Earlier documents keep
+  +their paths.
+  diff -ruNa approved/plugins/workflow/skills/closing/SKILL.md yours/plugins/workflow/skills/closing/SKILL.md
+  --- approved/plugins/workflow/skills/closing/SKILL.md	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/skills/closing/SKILL.md	2026-11-15 14:11:15.609482389 +0100
+  @@ -0,0 +1,62 @@
+  +---
+  +name: closing
+  +description: Use when a milestone's acceptance is done or a backlog item closes - one claude/ branch with everything owed, then one dev run that merges, tags and pushes
+  +---
+  +
+  +# Closing a milestone or an item
+  +
+  +One `claude/` branch carries everything; the human reviews it and runs
+  +one `dev run`, and nothing is left to catch up afterwards. Every step
+  +comes from the rules (core's and documentation.md) or this skill;
+  +this is their order. Step 2 and the tag are for milestones only.
+  +
+  +1. **What's owed.** Read `out/actions*.log` and the logs cited in the
+  +   change's folder: every run applied to a running system since the
+  +   newest entry in `docs/change/operations-log.md` gets its entry on
+  +   this branch. Every open finding in the change's records has its one
+  +   place (done, backlog, spec, accepted risk, or handed over).
+  +2. **Version check.** The project's pin check if CLAUDE.md's Commands
+  +   names one, else every pinned image and package listed by hand. Its
+  +   table goes into the acceptance results. For each newer release, read
+  +   its notes, security releases first; an update is its own PR or a
+  +   backlog item, never part of this branch.
+  +3. **Records.** The spec's acceptance results: each criterion met or
+  +   not, with its evidence; every deviation from the spec named. An item
+  +   without a spec: its record in its change folder.
+  +4. **Direction.** The backlog item leaves with a link to its record;
+  +   the "Now:" line; the session-handoff memory.
+  +5. **Checks.** The project's checks pass on the branch's last commit:
+  +   that commit is `<tested sha>` below.
+  +6. **The human's run.** `out/actions.txt` from the template below (a
+  +   new title per closing); then one line in chat naming its steps.
+  +
+  +## Template
+  +
+  +Fill `<project>`, `<title>`, `<branch>`, `<tested sha>`, `<summary>`;
+  +for a milestone `<tag>` (`<milestone>-accepted`). For an item, drop the
+  +tag step and push `main` alone.
+  +
+  +Push steps: the ones in the project's runbook (tunnels, which remotes
+  +get which closings); without any, one `git push <remote> main` step per
+  +`git remote`. No `server` line: closing has only `local` steps.
+  +
+  +```
+  +# <project>: <title>
+  +
+  +> Merges <branch> into main (--no-ff), refusing if it doesn't start
+  +> from the current main. <summary>. The checks passed on <tested sha>
+  +> in the box. Switches your checkout to main.
+  +local git merge-base --is-ancestor main <branch> || { echo "<branch> doesn't start from main: rebuild it"; exit 1; }; git switch main && git merge --no-ff <branch> -m "Merge <branch>: <title>"
+  +
+  +> The merged tree must equal the tested commit <tested sha>.
+  +local git diff --exit-code <tested sha> main --stat
+  +
+  +> Tags main as <tag>, refusing if the tag exists.
+  +local if git rev-parse -q --verify refs/tags/<tag> >/dev/null; then echo "tag <tag> exists"; exit 1; fi; git tag -a <tag> -m "<tag>" main
+  +
+  +> Pushes main and <tag> to <remote>.
+  +local git push <remote> main refs/tags/<tag>
+  +
+  +> Deletes the merged branch.
+  +local git branch -d <branch>
+  +```
+  diff -ruNa approved/plugins/workflow/skills/sizes-of-change/SKILL.md yours/plugins/workflow/skills/sizes-of-change/SKILL.md
+  --- approved/plugins/workflow/skills/sizes-of-change/SKILL.md	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/skills/sizes-of-change/SKILL.md	2026-11-15 14:11:15.609500425 +0100
+  @@ -0,0 +1,20 @@
+  +---
+  +name: sizes-of-change
+  +description: Use when a change starts - deciding whether it's one PR or an intent, and the steps an intent goes through
+  +---
+  +
+  +# Sizes of change
+  +
+  +The AI-native SDLC playbook's two:
+  +
+  +- **One PR:** a bounded change or finding. Branch, merge.
+  +- **An intent:** anything wider than one patch. Intent ??? spec (approved
+  +  before building) ??? one plan per branch ??? build ??? merge ??? acceptance
+  +  results recorded in the spec: each criterion met or not, with its
+  +  evidence, and every deviation from the spec named. The intent is the
+  +  human's, in their own words: they write it, or Claude drafts it from
+  +  what they said and they approve it.
+  +- **Acceptance and closing** of a milestone or an item: the
+  +  `workflow:closing` skill, one branch and one `dev run`.
+  +
+  +In doubt about the size: ask once, in one line.
+  diff -ruNa approved/plugins/workflow/starter/CLAUDE.md.starter yours/plugins/workflow/starter/CLAUDE.md.starter
+  --- approved/plugins/workflow/starter/CLAUDE.md.starter	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/starter/CLAUDE.md.starter	2026-11-15 14:11:15.609542128 +0100
+  @@ -0,0 +1,28 @@
+  +# {{name}}
+  +
+  +_What this project owns, in one paragraph: written at the first session._
+  +
+  +## Start of a session
+  +
+  +Read the three families top-down:
+  +
+  +1. **Direction:** [docs/direction/backlog.md](docs/direction/backlog.md),
+  +   the only status.
+  +2. **Change:** the intent, spec or plan its current milestone links.
+  +3. **System:** [the architecture](docs/system/architecture/README.md) and
+  +   [the runbook](docs/system/runbook.md), before proposing anything.
+  +
+  +## Commands
+  +
+  +- `tests/run.sh`: the project's checks, Markdown links to begin with.
+  +  Healthy output ends with `ALL PASSED`.
+  +
+  +## Rules
+  +
+  +_This project's own rules. Where it works differently from the
+  +default, one line here says so: "Differs from the default:
+  +the rule (why)"._
+  +
+  +## Neighbours' interfaces
+  +
+  +_Links to the contracts of other projects this one relies on; none yet._
+  diff -ruNa approved/plugins/workflow/starter/docs/direction/backlog.md yours/plugins/workflow/starter/docs/direction/backlog.md
+  --- approved/plugins/workflow/starter/docs/direction/backlog.md	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/starter/docs/direction/backlog.md	2026-11-15 14:11:15.609588019 +0100
+  @@ -0,0 +1,8 @@
+  +# Backlog
+  +
+  +The ordered queue of milestones, each an outcome with acceptance
+  +criteria, and the only place with status.
+  +
+  +**Now:** nothing started.
+  +
+  +## Later
+  diff -ruNa approved/plugins/workflow/starter/docs/system/architecture/README.md yours/plugins/workflow/starter/docs/system/architecture/README.md
+  --- approved/plugins/workflow/starter/docs/system/architecture/README.md	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/starter/docs/system/architecture/README.md	2026-11-15 14:11:15.609628234 +0100
+  @@ -0,0 +1,4 @@
+  +# Architecture
+  +
+  +What {{name}} is, right now: C4 views, each with an element table below
+  +its diagram. None drawn yet.
+  diff -ruNa approved/plugins/workflow/starter/docs/system/runbook.md yours/plugins/workflow/starter/docs/system/runbook.md
+  --- approved/plugins/workflow/starter/docs/system/runbook.md	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/starter/docs/system/runbook.md	2026-11-15 14:11:15.609640900 +0100
+  @@ -0,0 +1,3 @@
+  +# Runbook
+  +
+  +Steps to run, change and recover {{name}}. None yet.
+  diff -ruNa approved/plugins/workflow/starter/.gitignore yours/plugins/workflow/starter/.gitignore
+  --- approved/plugins/workflow/starter/.gitignore	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/starter/.gitignore	2026-11-15 14:11:15.609523112 +0100
+  @@ -0,0 +1 @@
+  +out/
+  diff -ruNa approved/plugins/workflow/starter/tests/check_links.py yours/plugins/workflow/starter/tests/check_links.py
+  --- approved/plugins/workflow/starter/tests/check_links.py	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/starter/tests/check_links.py	2026-11-15 14:11:15.609657166 +0100
+  @@ -0,0 +1,62 @@
+  +"""Markdown link check: every relative link in the repo's Markdown files
+  +points to a file that exists, and every #anchor to a heading in it.
+  +A link into out/ is refused: out/ isn't in git, so it breaks on any other clone.
+  +Links to web pages (http:, https:, mailto:), code blocks and inline code
+  +are skipped.
+  +
+  +Run: python3 tests/check_links.py [repo]   (or tests/run.sh); repo defaults
+  +to this one.
+  +"""
+  +
+  +import re
+  +import subprocess
+  +import sys
+  +from pathlib import Path
+  +
+  +REPO = Path(__file__).resolve().parent.parent
+  +
+  +
+  +def anchors(path):
+  +    """GitHub/Forgejo-style anchors of a Markdown file's headings."""
+  +    found = set()
+  +    for line in path.read_text().splitlines():
+  +        m = re.match(r"#+ (.*)", line)
+  +        if m:
+  +            a = m.group(1).strip().lower()
+  +            a = re.sub(r"[^\w\- ]", "", a).replace(" ", "-")
+  +            found.add(a)
+  +    return found
+  +
+  +
+  +def main():
+  +    repo = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else REPO
+  +    files = subprocess.run(["git", "ls-files", "*.md"], cwd=repo,
+  +                           capture_output=True, text=True, check=True).stdout.split()
+  +    problems = 0
+  +    for name in files:
+  +        f = repo / name
+  +        if not f.exists():
+  +            continue
+  +        text = re.sub(r"```.*?```", "", f.read_text(), flags=re.S)
+  +        text = re.sub(r"`[^`\n]*`", "", text)
+  +        for m in re.finditer(r"\]\(([^)\s]+)\)", text):
+  +            link = m.group(1)
+  +            if re.match(r"[a-z]+:", link):
+  +                continue
+  +            path, _, frag = link.partition("#")
+  +            target = (f.parent / path).resolve() if path else f.resolve()
+  +            if target == repo / "out" or (repo / "out") in target.parents:
+  +                print(f"{name}: links into out/ (not in git) {link}")
+  +                problems += 1
+  +            elif not target.exists():
+  +                print(f"{name}: missing {link}")
+  +                problems += 1
+  +            elif frag and target.suffix == ".md" and frag not in anchors(target):
+  +                print(f"{name}: no heading #{frag} in {path or f.name}")
+  +                problems += 1
+  +    print(f"links: {len(files)} files, {problems} problems")
+  +    return 1 if problems else 0
+  +
+  +
+  +if __name__ == "__main__":
+  +    sys.exit(main())
+  diff -ruNa approved/plugins/workflow/starter/tests/run.sh yours/plugins/workflow/starter/tests/run.sh
+  --- approved/plugins/workflow/starter/tests/run.sh	1970-01-01 01:00:00.000000000 +0100
+  +++ yours/plugins/workflow/starter/tests/run.sh	2026-11-15 14:11:15.609674053 +0100
+  @@ -0,0 +1,7 @@
+  +#!/usr/bin/env bash
+  +# The project's checks. Healthy output ends with ALL PASSED.
+  +cd "$(dirname "$0")/.." || exit 1
+  +status=0
+  +echo "== Links"; python3 tests/check_links.py . || status=1
+  +echo; if [ "$status" = 0 ]; then echo "ALL PASSED"; else echo "SOME FAILED"; fi
+  +exit "$status"
+Plugins:
+  + superpowers@superpowers-marketplace 7.0.2
+Apply it? [Y/n] STEP 1/14: FROM localhost/claude-box
+STEP 2/14: USER root
+--> 80c8fc8e24d1
+STEP 3/14: COPY plugins/workflow /usr/local/share/claude-box/plugins/workflow
+--> 2d2949b615d6
+STEP 4/14: RUN git config --system user.name 'Claude' && git config --system user.email 'claude@claude-box.invalid'
+--> a9610f9fbfbf
+STEP 5/14: ENV CLAUDE_CODE_PLUGIN_DIRS=/usr/local/share/claude-box/plugins/box-workflow:/usr/local/share/claude-box/plugins/workflow
+--> 7747dc8a047c
+STEP 6/14: COPY seed /usr/local/share/claude-box/seed
+--> 794889429a16
+STEP 7/14: COPY claude-box-plugins.json /etc/claude-code/managed-settings.d/
+--> 95a2dc5468e5
+STEP 8/14: RUN chmod 644 /etc/claude-code/managed-settings.d/claude-box-plugins.json
+--> 731f138d8980
+STEP 9/14: COPY known_marketplaces.json /home/claude/.claude/plugins/known_marketplaces.json
+--> 3ce0dafa000f
+STEP 10/14: RUN chmod 644 /home/claude/.claude/plugins/known_marketplaces.json
+--> 57baa02f3ff8
+STEP 11/14: ENV CLAUDE_CODE_PLUGIN_SEED_DIR=/usr/local/share/claude-box/seed
+--> a86cf1f19dee
+STEP 12/14: RUN chmod -R a+rX /usr/local/share/claude-box
+--> e418a9a30cec
+STEP 13/14: USER claude
+--> fca511f02715
+STEP 14/14: LABEL "claude-box.image"="1" "claude-box.config"="2ce7b80157b9e76b874212e62f42a8ac8cf1720e2da92e31169c96a8ea5b610b" "claude-box.base"="803aa3fddf2e891897267a11cf3e26db57516d966f79c634c0ea6180cd6f5676"
+COMMIT localhost/claude-box.user
+--> 107e01dde0f4
+Successfully tagged localhost/claude-box.user:latest
+107e01dde0f4482ac26810f8b4856f4954dc2dbeec305beb867c52035da9bc21
+claude --version
+git config --system user.email
+exit
+[claude@claude-box hello]$ claude --version
+2.1.325 (Claude Code)
+[claude@claude-box hello]$ git config --system user.email
+claude@claude-box.invalid
+[claude@claude-box hello]$ exit
+exit
+STRANGER-TEST-OK
+y
+echo CORE-BEGIN; ls -1 /etc/claude-code /usr/local/share/claude-box/plugins/box-workflow/skills; echo CORE-END; if [ -e ~/.claude/rules/workflow/documentation.md ]; then echo WORKFLOW-RULES-THERE; else echo WORKFLOW-RULES-GONE; fi
+exit
+Your config (~/.claude/.dev) differs from the one you approved last:
+  diff -ruNa approved/.dev yours/.dev
+  --- approved/.dev	2026-11-15 14:11:24.865171065 +0100
+  +++ yours/.dev	2026-11-15 14:11:24.827867651 +0100
+  @@ -5,7 +5,6 @@
+   identity Claude <claude@claude-box.invalid>
+   
+   # The workflow: documents in three families, specs and plans, the closing skill.
+  -plugin workflow
+   
+   # Messages from your sessions of your group's projects go on as your prompt; delete to hold them.
+   autotake group
+  diff -ruNa approved/plugins/workflow/.claude-plugin/plugin.json yours/plugins/workflow/.claude-plugin/plugin.json
+  --- approved/plugins/workflow/.claude-plugin/plugin.json	2026-11-15 14:11:24.866450086 +0100
+  +++ yours/plugins/workflow/.claude-plugin/plugin.json	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,11 +0,0 @@
+  -{
+  -  "name": "workflow",
+  -  "version": "0.2.0",
+  -  "description": "A way of working: documents in three families, specs and plans, the closing skill",
+  -  "dependencies": ["superpowers@superpowers-marketplace"],
+  -  "metadata": {
+  -    "claude-box": {
+  -      "marketplaces": { "superpowers-marketplace": "obra/superpowers-marketplace" }
+  -    }
+  -  }
+  -}
+  diff -ruNa approved/plugins/workflow/README.md yours/plugins/workflow/README.md
+  --- approved/plugins/workflow/README.md	2026-11-15 14:11:24.866513965 +0100
+  +++ yours/plugins/workflow/README.md	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,22 +0,0 @@
+  -# workflow
+  -
+  -An ordinary, optional Claude Code plugin: the way this repo itself is
+  -run. Documents come in three families (direction, change, system),
+  -superpowers writes a change's spec and plans, and a closing skill
+  -prepares a milestone's last branch and run. Bring it in with
+  -`plugin workflow` in `~/.claude/.dev`; leave it out and plan your own
+  -way. It brings [superpowers](https://github.com/obra/superpowers),
+  -which `dev` builds into the image with it.
+  -
+  -## Map
+  -
+  -| Part | What it is | Where it lands |
+  -|---|---|---|
+  -| [.claude-plugin/plugin.json](.claude-plugin/plugin.json) | The plugin's name, its dependency on superpowers, and that marketplace's repo | Read by Claude Code and `dev` |
+  -| [rules/documentation.md](rules/documentation.md) | The three families of documents, and where each fact lives | Read-only at `~/.claude/rules/workflow/`, read at every start |
+  -| [rules/specs-and-plans.md](rules/specs-and-plans.md) | Where superpowers writes a change's documents | The same |
+  -| [rules/markdown.md](rules/markdown.md) | Links and Mermaid diagrams in Markdown, and the link check an existing project copies from the starter | The same |
+  -| [rules/claude-md.md](rules/claude-md.md) | The sections of a project's `CLAUDE.md`, read only when Claude reads or edits one | The same, path-scoped |
+  -| [skills/sizes-of-change/](skills/sizes-of-change/SKILL.md) | `workflow:sizes-of-change`: one PR or an intent, and an intent's steps, loaded when a change starts | Built into the image, loaded by every session |
+  -| [skills/closing/](skills/closing/SKILL.md) | `workflow:closing`: one branch with everything a milestone owes, one `dev run` that merges, tags and pushes | Built into the image, loaded by every session |
+  -| [starter/](starter/) | A new project's first files: `CLAUDE.md`, the backlog, architecture and runbook pages, `docs/change/`, `tests/run.sh` with the link check, `.gitignore` | Laid down by `dev new` |
+  diff -ruNa approved/plugins/workflow/rules/claude-md.md yours/plugins/workflow/rules/claude-md.md
+  --- approved/plugins/workflow/rules/claude-md.md	2026-11-15 14:11:24.866556945 +0100
+  +++ yours/plugins/workflow/rules/claude-md.md	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,14 +0,0 @@
+  ----
+  -paths:
+  -  - "**/CLAUDE.md"
+  -  - ".claude/rules/**"
+  -  - "out/**/*CLAUDE*.md"
+  ----
+  -
+  -# A project's CLAUDE.md
+  -
+  -Where each fact goes is core's levels rule. A project's `CLAUDE.md` has
+  -these sections, in this order: a first paragraph saying what the project
+  -owns; Start of a session; Commands; Rules; Neighbours' interfaces. Its
+  -Rules section holds the project's own rules and its "Differs from the
+  -default" lines.
+  diff -ruNa approved/plugins/workflow/rules/documentation.md yours/plugins/workflow/rules/documentation.md
+  --- approved/plugins/workflow/rules/documentation.md	2026-11-15 14:11:24.866602625 +0100
+  +++ yours/plugins/workflow/rules/documentation.md	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,55 +0,0 @@
+  -# Documentation: three families
+  -
+  -Every document in a project belongs to exactly one family. Work flows
+  -direction ??? change ??? system; findings about the system flow back into
+  -direction. A project creates a family's documents only when it needs
+  -them.
+  -
+  -| Family | Answers | Standard | Documents | Lifetime |
+  -|---|---|---|---|---|
+  -| **Direction** | Where are we going, what's next? | Product management | Product vision (long term); product backlog: an ordered queue, the only place with status | Living: reordered, items leave when done |
+  -| **Change** | What was asked, decided and done for one change? | The AI-native SDLC playbook (claude.com/blog/the-ai-native-sdlc-playbook) | Intent, spec, plan, then the PR; findings from reviews and research; the operations log (append-only, one entry per run applied to a running system) | Point in time: a record once written, never edited again |
+  -| **System** | What is, right now? | C4 (Simon Brown's), plus a runbook | The C4 views with their element tables, the decisions that cut across them; the runbook | Living: always what's built (planned elements dashed) |
+  -
+  -In the system family:
+  -
+  -- **C4 views:** system context, container, and deployment; a component
+  -  view for a container whose parts others rely on. Every view has an
+  -  element table below its diagram. A fact about an element (what it
+  -  runs as, its credentials, its data, who reaches it) goes into that
+  -  table or another table below the diagram keyed by element, never a
+  -  separate document. A component groups related parts behind one
+  -  interface; it isn't a file. The code level stays undrawn.
+  -- **Runbook:** the one thing C4 doesn't cover: step-by-step procedures
+  -  to run, change and recover the system. Steps only; facts are linked
+  -  to the views.
+  -
+  -## Rules
+  -
+  -- **A fact's family decides its home.** Status only in the backlog; what
+  -  was decided for one change only in its spec; what is only in the
+  -  system docs. Link from anywhere else, never copy.
+  -- **Terms come from the family's standard**, named as that standard
+  -  names them. No analogies between standards ("the architecture is the
+  -  high-level spec"). Where no standard has a term, say it's our own.
+  -- **Outcomes aren't deliverables.** An outcome (a goal) is what's
+  -  different for the human once it's done, checked by acceptance
+  -  criteria; a deliverable is what gets built to get there. The vision,
+  -  backlog items and intents state outcomes; specs and plans list
+  -  deliverables. A backlog item that names a deliverable instead of an
+  -  outcome is rewritten, or moves into a spec.
+  -- **The backlog is ordered by milestones**, each an outcome with
+  -  acceptance criteria. A milestone becomes an intent when it starts; its
+  -  criteria are the intent's outcome. Phases and steps belong in plans.
+  -- **Records stay as written.** Only link targets change, when files move.
+  -  No "superseded" banners: the later spec says what it replaces. Every
+  -  open finding in a record ends up in exactly one place: done (linked),
+  -  the backlog, a spec, an accepted risk in the system docs, or another
+  -  system's (listed in the backlog as handed over). An intent's acceptance
+  -  checks that none is left only in a record.
+  -- **Something that doesn't fit** gets placed in its family, not a new
+  -  kind of document.
+  -- **The branch that builds a change updates the system docs** (the C4
+  -  views and their element tables, the runbook). The spec stays as its record.
+  -- **A change's size** (one PR or an intent) and its steps: the
+  -  `workflow:sizes-of-change` skill.
+  diff -ruNa approved/plugins/workflow/rules/markdown.md yours/plugins/workflow/rules/markdown.md
+  --- approved/plugins/workflow/rules/markdown.md	2026-11-15 14:11:24.866634593 +0100
+  +++ yours/plugins/workflow/rules/markdown.md	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,26 +0,0 @@
+  -# Markdown files
+  -
+  -- Write references to files, folders and sections as clickable links, not
+  -  bare code spans: `[phase0/README.md](../phase0/README.md)`, or
+  -  `[Deploy](../docs/brief.md#deploy)` for a heading.
+  -- Paths are relative to the Markdown file that contains the link, so they
+  -  work in editors and on git hosts alike. Check that each target exists.
+  -- A project with Markdown docs checks its links in its test run: every
+  -  relative link and `#anchor` resolves (the workflow
+  -  plugin's starter `tests/check_links.py`, standard library only). A
+  -  project that adopts the plugin copies it once, on a `claude/` branch,
+  -  from `/usr/local/share/claude-box/plugins/workflow/starter/tests/`.
+  -- Commands, file contents and paths that aren't meant to be opened stay in
+  -  code spans or code blocks.
+  -- Draw diagrams as Mermaid code blocks, in the subset the owner's preview
+  -  renders: `flowchart` only (no C4 or other experimental syntax, no
+  -  `%%{init}%%` or config front matter). Keep them small:
+  -  - at most about 10???12 boxes per diagram; split bigger views into several
+  -    diagrams, one per topic;
+  -  - an arrow points from the side that starts it (the request, the
+  -    connection, the action), and "from ??? label ??? to" reads as a
+  -    sentence; data may flow both ways, the arrow says who starts;
+  -  - short arrow labels ("purpose [protocol]", e.g. "sends model
+  -    requests to [HTTPS]"), full descriptions in a table below the
+  -    diagram.
+  -- Only a very large picture that can't be split sensibly may be ASCII art.
+  diff -ruNa approved/plugins/workflow/rules/specs-and-plans.md yours/plugins/workflow/rules/specs-and-plans.md
+  --- approved/plugins/workflow/rules/specs-and-plans.md	2026-11-15 14:11:24.866665266 +0100
+  +++ yours/plugins/workflow/rules/specs-and-plans.md	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,16 +0,0 @@
+  -# Specs and plans (superpowers)
+  -
+  -The superpowers plugin, enabled for every project, writes a change's
+  -documents: brainstorming the spec, writing-plans the plans,
+  -executing-plans or subagent-driven-development the build. Unless a
+  -project says otherwise, `docs/` holds one folder per family:
+  -`direction/` (`vision.md`, `backlog.md`), `change/` and `system/`
+  -(`architecture/` for the C4 views, `runbook.md`). Under `change/`, one
+  -folder per change, `YYYY-MM-DD-<topic>/`, holds all its records:
+  -`intent.md`, `spec.md`, one `plan-<topic>.md` per branch, the findings
+  -that fed it, its scripts; this replaces superpowers' default paths. A
+  -finding that served no single change gets its own dated folder; the
+  -operations log, `operations-log.md`, sits at the top of `change/`.
+  -Plans keep superpowers' checkbox format but aren't ticked: progress
+  -shows in the commits and the backlog's status. Earlier documents keep
+  -their paths.
+  diff -ruNa approved/plugins/workflow/skills/closing/SKILL.md yours/plugins/workflow/skills/closing/SKILL.md
+  --- approved/plugins/workflow/skills/closing/SKILL.md	2026-11-15 14:11:24.866738645 +0100
+  +++ yours/plugins/workflow/skills/closing/SKILL.md	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,62 +0,0 @@
+  ----
+  -name: closing
+  -description: Use when a milestone's acceptance is done or a backlog item closes - one claude/ branch with everything owed, then one dev run that merges, tags and pushes
+  ----
+  -
+  -# Closing a milestone or an item
+  -
+  -One `claude/` branch carries everything; the human reviews it and runs
+  -one `dev run`, and nothing is left to catch up afterwards. Every step
+  -comes from the rules (core's and documentation.md) or this skill;
+  -this is their order. Step 2 and the tag are for milestones only.
+  -
+  -1. **What's owed.** Read `out/actions*.log` and the logs cited in the
+  -   change's folder: every run applied to a running system since the
+  -   newest entry in `docs/change/operations-log.md` gets its entry on
+  -   this branch. Every open finding in the change's records has its one
+  -   place (done, backlog, spec, accepted risk, or handed over).
+  -2. **Version check.** The project's pin check if CLAUDE.md's Commands
+  -   names one, else every pinned image and package listed by hand. Its
+  -   table goes into the acceptance results. For each newer release, read
+  -   its notes, security releases first; an update is its own PR or a
+  -   backlog item, never part of this branch.
+  -3. **Records.** The spec's acceptance results: each criterion met or
+  -   not, with its evidence; every deviation from the spec named. An item
+  -   without a spec: its record in its change folder.
+  -4. **Direction.** The backlog item leaves with a link to its record;
+  -   the "Now:" line; the session-handoff memory.
+  -5. **Checks.** The project's checks pass on the branch's last commit:
+  -   that commit is `<tested sha>` below.
+  -6. **The human's run.** `out/actions.txt` from the template below (a
+  -   new title per closing); then one line in chat naming its steps.
+  -
+  -## Template
+  -
+  -Fill `<project>`, `<title>`, `<branch>`, `<tested sha>`, `<summary>`;
+  -for a milestone `<tag>` (`<milestone>-accepted`). For an item, drop the
+  -tag step and push `main` alone.
+  -
+  -Push steps: the ones in the project's runbook (tunnels, which remotes
+  -get which closings); without any, one `git push <remote> main` step per
+  -`git remote`. No `server` line: closing has only `local` steps.
+  -
+  -```
+  -# <project>: <title>
+  -
+  -> Merges <branch> into main (--no-ff), refusing if it doesn't start
+  -> from the current main. <summary>. The checks passed on <tested sha>
+  -> in the box. Switches your checkout to main.
+  -local git merge-base --is-ancestor main <branch> || { echo "<branch> doesn't start from main: rebuild it"; exit 1; }; git switch main && git merge --no-ff <branch> -m "Merge <branch>: <title>"
+  -
+  -> The merged tree must equal the tested commit <tested sha>.
+  -local git diff --exit-code <tested sha> main --stat
+  -
+  -> Tags main as <tag>, refusing if the tag exists.
+  -local if git rev-parse -q --verify refs/tags/<tag> >/dev/null; then echo "tag <tag> exists"; exit 1; fi; git tag -a <tag> -m "<tag>" main
+  -
+  -> Pushes main and <tag> to <remote>.
+  -local git push <remote> main refs/tags/<tag>
+  -
+  -> Deletes the merged branch.
+  -local git branch -d <branch>
+  -```
+  diff -ruNa approved/plugins/workflow/skills/sizes-of-change/SKILL.md yours/plugins/workflow/skills/sizes-of-change/SKILL.md
+  --- approved/plugins/workflow/skills/sizes-of-change/SKILL.md	2026-11-15 14:11:24.866777590 +0100
+  +++ yours/plugins/workflow/skills/sizes-of-change/SKILL.md	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,20 +0,0 @@
+  ----
+  -name: sizes-of-change
+  -description: Use when a change starts - deciding whether it's one PR or an intent, and the steps an intent goes through
+  ----
+  -
+  -# Sizes of change
+  -
+  -The AI-native SDLC playbook's two:
+  -
+  -- **One PR:** a bounded change or finding. Branch, merge.
+  -- **An intent:** anything wider than one patch. Intent ??? spec (approved
+  -  before building) ??? one plan per branch ??? build ??? merge ??? acceptance
+  -  results recorded in the spec: each criterion met or not, with its
+  -  evidence, and every deviation from the spec named. The intent is the
+  -  human's, in their own words: they write it, or Claude drafts it from
+  -  what they said and they approve it.
+  -- **Acceptance and closing** of a milestone or an item: the
+  -  `workflow:closing` skill, one branch and one `dev run`.
+  -
+  -In doubt about the size: ask once, in one line.
+  diff -ruNa approved/plugins/workflow/starter/CLAUDE.md.starter yours/plugins/workflow/starter/CLAUDE.md.starter
+  --- approved/plugins/workflow/starter/CLAUDE.md.starter	2026-11-15 14:11:24.866867174 +0100
+  +++ yours/plugins/workflow/starter/CLAUDE.md.starter	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,28 +0,0 @@
+  -# {{name}}
+  -
+  -_What this project owns, in one paragraph: written at the first session._
+  -
+  -## Start of a session
+  -
+  -Read the three families top-down:
+  -
+  -1. **Direction:** [docs/direction/backlog.md](docs/direction/backlog.md),
+  -   the only status.
+  -2. **Change:** the intent, spec or plan its current milestone links.
+  -3. **System:** [the architecture](docs/system/architecture/README.md) and
+  -   [the runbook](docs/system/runbook.md), before proposing anything.
+  -
+  -## Commands
+  -
+  -- `tests/run.sh`: the project's checks, Markdown links to begin with.
+  -  Healthy output ends with `ALL PASSED`.
+  -
+  -## Rules
+  -
+  -_This project's own rules. Where it works differently from the
+  -default, one line here says so: "Differs from the default:
+  -the rule (why)"._
+  -
+  -## Neighbours' interfaces
+  -
+  -_Links to the contracts of other projects this one relies on; none yet._
+  diff -ruNa approved/plugins/workflow/starter/docs/direction/backlog.md yours/plugins/workflow/starter/docs/direction/backlog.md
+  --- approved/plugins/workflow/starter/docs/direction/backlog.md	2026-11-15 14:11:24.866960746 +0100
+  +++ yours/plugins/workflow/starter/docs/direction/backlog.md	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,8 +0,0 @@
+  -# Backlog
+  -
+  -The ordered queue of milestones, each an outcome with acceptance
+  -criteria, and the only place with status.
+  -
+  -**Now:** nothing started.
+  -
+  -## Later
+  diff -ruNa approved/plugins/workflow/starter/docs/system/architecture/README.md yours/plugins/workflow/starter/docs/system/architecture/README.md
+  --- approved/plugins/workflow/starter/docs/system/architecture/README.md	2026-11-15 14:11:24.867037040 +0100
+  +++ yours/plugins/workflow/starter/docs/system/architecture/README.md	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,4 +0,0 @@
+  -# Architecture
+  -
+  -What {{name}} is, right now: C4 views, each with an element table below
+  -its diagram. None drawn yet.
+  diff -ruNa approved/plugins/workflow/starter/docs/system/runbook.md yours/plugins/workflow/starter/docs/system/runbook.md
+  --- approved/plugins/workflow/starter/docs/system/runbook.md	2026-11-15 14:11:24.867068700 +0100
+  +++ yours/plugins/workflow/starter/docs/system/runbook.md	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,3 +0,0 @@
+  -# Runbook
+  -
+  -Steps to run, change and recover {{name}}. None yet.
+  diff -ruNa approved/plugins/workflow/starter/.gitignore yours/plugins/workflow/starter/.gitignore
+  --- approved/plugins/workflow/starter/.gitignore	2026-11-15 14:11:24.866827031 +0100
+  +++ yours/plugins/workflow/starter/.gitignore	1970-01-01 01:00:00.000000000 +0100
+  @@ -1 +0,0 @@
+  -out/
+  diff -ruNa approved/plugins/workflow/starter/tests/check_links.py yours/plugins/workflow/starter/tests/check_links.py
+  --- approved/plugins/workflow/starter/tests/check_links.py	2026-11-15 14:11:24.867104862 +0100
+  +++ yours/plugins/workflow/starter/tests/check_links.py	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,62 +0,0 @@
+  -"""Markdown link check: every relative link in the repo's Markdown files
+  -points to a file that exists, and every #anchor to a heading in it.
+  -A link into out/ is refused: out/ isn't in git, so it breaks on any other clone.
+  -Links to web pages (http:, https:, mailto:), code blocks and inline code
+  -are skipped.
+  -
+  -Run: python3 tests/check_links.py [repo]   (or tests/run.sh); repo defaults
+  -to this one.
+  -"""
+  -
+  -import re
+  -import subprocess
+  -import sys
+  -from pathlib import Path
+  -
+  -REPO = Path(__file__).resolve().parent.parent
+  -
+  -
+  -def anchors(path):
+  -    """GitHub/Forgejo-style anchors of a Markdown file's headings."""
+  -    found = set()
+  -    for line in path.read_text().splitlines():
+  -        m = re.match(r"#+ (.*)", line)
+  -        if m:
+  -            a = m.group(1).strip().lower()
+  -            a = re.sub(r"[^\w\- ]", "", a).replace(" ", "-")
+  -            found.add(a)
+  -    return found
+  -
+  -
+  -def main():
+  -    repo = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else REPO
+  -    files = subprocess.run(["git", "ls-files", "*.md"], cwd=repo,
+  -                           capture_output=True, text=True, check=True).stdout.split()
+  -    problems = 0
+  -    for name in files:
+  -        f = repo / name
+  -        if not f.exists():
+  -            continue
+  -        text = re.sub(r"```.*?```", "", f.read_text(), flags=re.S)
+  -        text = re.sub(r"`[^`\n]*`", "", text)
+  -        for m in re.finditer(r"\]\(([^)\s]+)\)", text):
+  -            link = m.group(1)
+  -            if re.match(r"[a-z]+:", link):
+  -                continue
+  -            path, _, frag = link.partition("#")
+  -            target = (f.parent / path).resolve() if path else f.resolve()
+  -            if target == repo / "out" or (repo / "out") in target.parents:
+  -                print(f"{name}: links into out/ (not in git) {link}")
+  -                problems += 1
+  -            elif not target.exists():
+  -                print(f"{name}: missing {link}")
+  -                problems += 1
+  -            elif frag and target.suffix == ".md" and frag not in anchors(target):
+  -                print(f"{name}: no heading #{frag} in {path or f.name}")
+  -                problems += 1
+  -    print(f"links: {len(files)} files, {problems} problems")
+  -    return 1 if problems else 0
+  -
+  -
+  -if __name__ == "__main__":
+  -    sys.exit(main())
+  diff -ruNa approved/plugins/workflow/starter/tests/run.sh yours/plugins/workflow/starter/tests/run.sh
+  --- approved/plugins/workflow/starter/tests/run.sh	2026-11-15 14:11:24.867146595 +0100
+  +++ yours/plugins/workflow/starter/tests/run.sh	1970-01-01 01:00:00.000000000 +0100
+  @@ -1,7 +0,0 @@
+  -#!/usr/bin/env bash
+  -# The project's checks. Healthy output ends with ALL PASSED.
+  -cd "$(dirname "$0")/.." || exit 1
+  -status=0
+  -echo "== Links"; python3 tests/check_links.py . || status=1
+  -echo; if [ "$status" = 0 ]; then echo "ALL PASSED"; else echo "SOME FAILED"; fi
+  -exit "$status"
+Plugins:
+  - superpowers@superpowers-marketplace
+Apply it? [Y/n] STEP 1/7: FROM localhost/claude-box
+STEP 2/7: USER root
+--> Using cache 80c8fc8e24d16f8345757fad46c76b3d0adfcb2d194a79d386d73f2ed6cb8ff6
+--> 80c8fc8e24d1
+STEP 3/7: RUN git config --system user.name 'Claude' && git config --system user.email 'claude@claude-box.invalid'
+--> 28e28f0ce321
+STEP 4/7: ENV CLAUDE_CODE_PLUGIN_DIRS=/usr/local/share/claude-box/plugins/box-workflow
+--> ddf6319a5a6b
+STEP 5/7: RUN chmod -R a+rX /usr/local/share/claude-box
+--> 01c2b04e8451
+STEP 6/7: USER claude
+--> d978125718f1
+STEP 7/7: LABEL "claude-box.image"="1" "claude-box.config"="dfc6580f09078bb39d26e4d83aedeedda65a9f18630208a8d63caa5cb3a121d2" "claude-box.base"="803aa3fddf2e891897267a11cf3e26db57516d966f79c634c0ea6180cd6f5676"
+COMMIT localhost/claude-box.user
+--> fcfb04e26d34
+Successfully tagged localhost/claude-box.user:latest
+fcfb04e26d34852bb4e162546b21c8c118cba4301a7fc0e81655c652888d87eb
+echo CORE-BEGIN; ls -1 /etc/claude-code /usr/local/share/claude-box/plugins/box-workflow/skills; echo CORE-END; if [ -e ~/.claude/rules/workflow/documentation.md ]; then echo WORKFLOW-RULES-THERE; else echo WORKFLOW-RULES-GONE; fi
+exit
+[claude@claude-box hello]$ <FLOW-RULES-THERE; else echo WORKFLOW-RULES-GONE; fi
+CORE-BEGIN
+/etc/claude-code:
+CLAUDE.md
+branches-and-evidence.md
+levels.md
+managed-settings.d
+managed-settings.json
+
+/usr/local/share/claude-box/plugins/box-workflow/skills:
+dev-run
+handoff
+CORE-END
+WORKFLOW-RULES-GONE
+[claude@claude-box hello]$ exit
+exit

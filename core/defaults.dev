@@ -1,0 +1,66 @@
+# claude-box's reference for .dev, the file that says what's in a box.
+# Yours is ~/.claude/.dev (every project; dev init writes it), a project's
+# is .dev in its top folder. Without yours, dev uses this file's items.
+# dev shows each change to yours and applies it only after you say yes.
+#
+# One item per line, "<kind> <value>"; # starts a comment.
+#
+# Both levels:
+#   plugin <value>             a Claude Code plugin (a skill folder, SKILL.md at
+#                              its root, counts as one):
+#     plugin workflow          a plugin in claude-box's plugins/, from main
+#     plugin ~/.claude/my-plugin  a plugin or skill folder under ~/.claude
+#     plugin superpowers@superpowers-marketplace obra/superpowers-marketplace
+#                              a marketplace plugin and its marketplace's repo
+#                              Where it lands: built into the box's image, at
+#                              its level, where no session can change it. By
+#                              name or folder: its rules/ read-only at
+#                              ~/.claude/rules/<name>/, its starter/ laid down by
+#                              dev new (yours only). From a marketplace: Claude
+#                              Code fetches it into a seed, shown and approved
+#                              like any change; dev checks it for new commits
+#                              at every dev claude.
+#   rules <value>              a rules file (.md):
+#     rules ~/.claude/style.md a rules file under ~/.claude
+#     rules https://<host>/<path with a commit>/<file>.md
+#                              a rules file, fetched once and pinned
+#                              Where it lands: read-only at
+#                              ~/.claude/rules/files/<file>.
+#                              A project's own rules and skills can also go in
+#                              its .claude/rules/ and .claude/skills/.
+#   dnf <package>              a package in the box
+#     dnf jq
+#   npm <package>              an npm package, installed globally in the box
+#   pip <package>              a pip package in the box
+#
+# Yours only (~/.claude/.dev):
+#   identity <name> <<email>>  Claude's git identity in the box
+#     identity Ann <ann@example.org>
+#   projects <folder>          your projects, read-only at /projects (never your
+#                              home, a folder above it, or /)
+#   memory <size>              a cap for each box (e.g. 8g); none by default
+#   cpus <n>                   a cap for each box (e.g. 10); none by default
+#   remote-control on|off      sessions reachable by name through claude.ai
+#   group <folder>             your projects directly in this folder (under
+#                              projects) are one group, named after it
+#     group ~/Projects/app
+#   remote <group> <name>      a project of that group that lives only on
+#                              another of your machines (its session name)
+#     remote app app-phone
+#   autotake group             your group's members' messages go on as your
+#                              prompt, as /autotake <member> would; others
+#                              are held. dev init's config has it
+#
+# A project's only (.dev):
+#   port <n>                   publish this port of the project's box on localhost
+#     port 2718
+#   group <name>               this project joins the group <name>, after your yes
+#
+# The repo's plugins: workflow (documents in three families, specs and
+# plans, the closing skill; it brings superpowers).
+#
+# Pinned, Karpathy's coding guidelines:
+#   rules https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/2c606141936f1eeef17fa3043a72095b4765b9c2/CLAUDE.md
+
+projects        ~/Projects
+remote-control  on

@@ -1,0 +1,6 @@
+{
+  "name": "box-workflow",
+  "version": "0.1.0",
+  "description": "claude-box's mods: messages from other sessions wait for your go, dev run's state, the branch",
+  "types": "./types/index.d.ts"
+}

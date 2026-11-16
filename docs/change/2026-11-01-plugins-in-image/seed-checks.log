@@ -1,0 +1,10 @@
+run-actions 2026-11-01T16:25:56+01:00: claude-box: Seed checks 3 for plugins-in-image (read-only, throwaway boxes, a session's debug log; time limit outside the box)
+
+######## 1. local: bash docs/change/2026-11-01-plugins-in-image/seed-checks.sh
+   > Runs the seed checks again with one more: a session start (claude -p hello --debug) in a throwaway box with both seeds and no login, so Claude Code's debug log shows which plugins it loaded and from where. The first run showed staging works without a login, but `claude plugin list` doesn't list seed plugins. As before: nothing of ~/.claude is mounted, everything under one temp folder, removed at the end; about two minutes (two plugin installs). The session is expected to stop at the missing login. Details land in out/seed-checks/.
+1. staging without a login: seed A exit 0, seed B exit 0
+2. plugin list with both seeds: exit 0
+2b. session start without a login: exit 1, 139 plugin lines in the debug log
+3. files written into the config folder: 2
+Done; details in out/seed-checks/
+Done.

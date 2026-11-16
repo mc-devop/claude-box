@@ -1,0 +1,411 @@
+#!/usr/bin/env bash
+# run-actions (as `dev run`): runs the steps Claude wrote to out/actions.txt,
+# so you don't copy commands one by one. Run from the project's top folder:
+#
+#   dev run            (or: dev run <file>)
+#   dev run --force    also run the steps that already ran, and install steps
+#   run-actions --check [file]   only report mistakes in the file (runs nothing)
+#   run-actions --status [file]  only print where its job stands (reads only)
+#
+# It shows every step with Claude's explanation and asks once before
+# starting (Enter = yes). Server steps in a row share one SSH session, so sudo asks for your
+# password once per such group; it runs them in one root shell that ends with the session,
+# and sudo forgets the password (sudo -k). Nothing persists, and the
+# password never passes through this script. Each host script does its dry
+# run first, then asks "apply?": Enter applies, s skips, n stops.
+#
+# Before running anything it refuses the whole file if a local or root step
+# could print a secret (podman secret values, secret storage, environment
+# dumps, podman inspect without --format, reading token/key files, shell
+# history lines): the output goes to out/actions.log and to Claude. It also
+# refuses a local step that installs software on your machine (curl | sh,
+# pip, pipx, npm -g, dnf, rpm-ostree, brew, cargo, uv tool): a tool a project
+# needs goes into its .dev. With --force it only warns: you mean the install.
+#
+# It aborts at the first step that fails or whose output looks wrong: an
+# error or warning line, output the step was expected to show but didn't,
+# or a new SELinux denial on the server. Everything shown is saved to
+# out/actions.log; after an abort, tell Claude to read it.
+#
+# It never runs a step twice: each step that succeeds is recorded in
+# out/actions.done under its file's title and its command. A file with the
+# same title (e.g. fixed after an abort) skips the steps that already ran;
+# the same command in a file with a new title runs. --force runs them all.
+#
+# out/actions.txt, one step per line; the lines before a step describe it:
+#   # <title>                first line only
+#   server <user@host>       where root and host steps run (needed for those)
+#   > <text>                 explanation, shown before the step
+#   expect <regex>           the step's output must match (grep -E)
+#   allow <regex>            error-looking lines matching this are fine
+#   local <command>          runs here, as you (e.g. git merge, git push)
+#   root <command>           runs on the server as root, after you say y
+#   host <script>.sh [args]  for projects with a host/ folder: host/<script>
+#                            from your main (with host/lib.sh if there), run as
+#                            root with --main=<sha>; dry run first, then
+#                            --apply if you say y. The script must end with
+#                            "N change(s) pending", "Applied N change(s)" or
+#                            "Nothing to change".
+
+set -euo pipefail
+
+# Everything below is one block, so bash reads the whole script before
+# running any of it: a step that updates this file (e.g. a claude-box
+# change) can't make the running copy read on in the new version.
+{
+
+SERVER=""
+force=""; mode=""
+case "${1:-}" in
+  --force) force=1; shift ;;
+  --check) mode=check; shift ;;
+  --status) mode=status; shift ;;
+esac
+file=${1:-out/actions.txt}
+# No .git here: a scratch session's folder (dev run --scratch, or the box's
+# checks in /work/scratch-<name>). No .gitignore to check, no main.
+repo=1; [ -e .git ] || repo=0
+logf=out/actions.log
+donef=out/actions.done
+if [ "$mode" = status ] && [ ! -f "$file" ]; then printf 'title=\npending=0\n'; exit 0; fi
+[ -f "$file" ] || { echo "no $file" >&2; exit 2; }
+
+# Shared with the server-side runner below. Lines that look like trouble;
+# diff lines from a dry run ("     +...") are ignored.
+CHECKS=$(cat <<'EOF'
+BAD_RE='(^|[[:space:]])(ERROR|Error|error|WARNING|Warning|warning|fatal):|Traceback|Permission denied|command not found|No such file or directory|avc: +denied|[Ff]ailed to|pwarn|STOPPED'
+# check_output file expect allow — prints why and returns 1 if the output
+# looks wrong.
+check_output() {
+  local f=$1 expect=$2 allow=$3 bad
+  bad=$(sed 's/\r$//' "$f" | grep -vE '^     [-+@]' | grep -E "$BAD_RE" \
+    | { if [ -n "$allow" ]; then grep -vE "$allow"; else cat; fi; } | head -n 5 || true)
+  if [ -n "$bad" ]; then printf 'unexpected output:\n%s\n' "$bad"; return 1; fi
+  if [ -n "$expect" ] && ! grep -qE "$expect" "$f"; then
+    printf 'expected output matching /%s/ but it is not there\n' "$expect"; return 1
+  fi
+}
+EOF
+)
+eval "$CHECKS"
+
+kinds=(); cmds=(); notes=(); expects=(); allows=()
+title=""; note=""; expect=""; allow=""
+while IFS= read -r line || [ -n "$line" ]; do
+  line=${line%"${line##*[![:space:]]}"}
+  case "$line" in
+    "") continue ;;
+    "# "*) [ -n "$title" ] || title=${line#\# }; continue ;;
+    \#*) continue ;;
+    ">"*) note+="${line#>}"$'\n'; continue ;;
+    "expect "*) expect=${line#expect }; continue ;;
+    "server "*) SERVER=${line#server }; continue ;;
+    "allow "*) allow=${line#allow }; continue ;;
+  esac
+  kind=${line%% *}; cmd=${line#* }
+  case "$kind" in
+    local|root) [ "$cmd" != "$line" ] || { echo "empty step: $line" >&2; exit 2; } ;;
+    host)
+      read -ra words <<<"$cmd"
+      [[ ${words[0]} =~ ^[a-z-]+\.sh$ ]] && [ "${words[0]}" != lib.sh ] \
+        || { echo "not a host script: $line" >&2; exit 2; }
+      for a in "${words[@]:1}"; do
+        [[ $a =~ ^[A-Za-z0-9._-]+$ && $a != --apply && $a != --main=* ]] \
+          || { echo "argument not allowed: $a (in: $line)" >&2; exit 2; }
+      done
+      ;;
+    *) echo "unknown line: $line" >&2; exit 2 ;;
+  esac
+  kinds+=("$kind"); cmds+=("$cmd"); notes+=("$note"); expects+=("$expect"); allows+=("$allow")
+  note=""; expect=""; allow=""
+done <"$file"
+[ ${#kinds[@]} -gt 0 ] || { echo "no steps in $file" >&2; exit 2; }
+# Left over after the last step: meant for a step, likely written below it.
+dangling=""; [ -z "$note$expect$allow" ] || dangling=1
+
+# step_key i: step i's key in out/actions.done, from its file's title and
+# its command.
+step_key() { printf '%s\n%s' "${title:-$file}" "${cmds[$1]}" | sha256sum | cut -c1-16; }
+
+# --status: where this file's job stands, as key=value lines; reads only.
+if [ "$mode" = status ]; then
+  pending=0
+  for i in "${!kinds[@]}"; do
+    { [ -f "$donef" ] && awk -v k="$(step_key "$i")" '$1 == k { f = 1 } END { exit !f }' "$donef"; } \
+      || pending=$((pending + 1))
+  done
+  last=none; ran=""; reason=""; t=${title:-$file}
+  if [ -f "$logf" ]; then
+    first=$(head -n 1 "$logf")
+    if [[ $first =~ ^run-actions\ ([^ ]+):\ (.*)$ ]] \
+       && { [ "${BASH_REMATCH[2]}" = "$t" ] || [[ ${BASH_REMATCH[2]} == "$t: every step already ran"* ]]; }; then
+      ran=${BASH_REMATCH[1]}
+      if reason=$(grep -m 1 '^ABORTED at ' "$logf"); then last=aborted; reason=${reason#ABORTED at }
+      elif [[ $(tail -n 1 "$logf") == Done.* || $first == *": every step already ran"* ]]; then last=passed; reason=""
+      else last=running; reason=""; fi
+    fi
+  fi
+  printf 'title=%s\npending=%s\nlast=%s\nran=%s\n' "$t" "$pending" "$last" "$ran"
+  [ "$last" != aborted ] || printf 'reason=%s\n' "$reason"
+  exit 0
+fi
+
+# secret_risk command — prints why a local or root step could print a
+# secret into the output (and so into out/actions.log and Claude's context),
+# or nothing. Host steps are scripts from the repo, reviewed as code.
+secret_risk() {
+  local c=$1
+  local sep='(^|[;&|(]|\$\()[[:space:]]*(sudo[[:space:]]+)?'
+  local envdump="${sep}(printenv|env|export[[:space:]]+-p|declare[[:space:]]+-x)[[:space:]]*(\$|[;&|)])"
+  # A reader is a word of its own (not the less of --headless), anywhere a
+  # command can start: after sudo, xargs, -exec or a path too.
+  local readers='(^|[^[:alnum:]_.-])(cat|less|more|head|tail|strings|xxd|od|base64)[[:space:]][^;|&]*'
+  local secretish='(token|secret|passw|credential|\.env([[:space:]]|$)|\.pem|\.key([[:space:]]|$)|id_rsa|id_ed25519)'
+  local inspect='podman[[:space:]]+(container[[:space:]]+)?inspect'
+  local format='(--format|[[:space:]]-f[[:space:]])'
+  if [[ $c =~ --showsecret ]]; then echo "podman secret value (--showsecret)"
+  elif [[ $c =~ containers/storage/secrets|secrets\.json ]]; then echo "Podman's secret storage"
+  elif [[ $c =~ /proc/[^[:space:]]*/environ ]]; then echo "a process environment (/proc/*/environ)"
+  elif [[ $c =~ $envdump ]]; then echo "an environment dump"
+  elif [[ $c =~ $inspect ]] && ! [[ $c =~ $format ]]; then
+    echo "podman inspect without --format (shows environment variables)"
+  elif [[ $c =~ podman[[:space:]]+(kube[[:space:]]+)?generate ]]; then
+    echo "podman generate (includes environment variables)"
+  elif [[ $c =~ $readers$secretish ]]; then echo "reading a file that looks like it holds a secret"
+  elif [[ $c =~ _history ]] && ! [[ $c =~ grep[[:space:]]+-c ]]; then
+    echo "shell history (count matches with grep -c instead of printing lines)"
+  fi
+}
+# install_risk command — prints why a local step installs software on your
+# machine, or nothing. A tool a project needs goes into its .dev.
+install_risk() {
+  local c=$1
+  local sep='(^|[;&|(]|\$\()[[:space:]]*(sudo[[:space:]]+)?'
+  local opts='([[:space:]]+-[^[:space:];&|]*)*[[:space:]]+'
+  if [[ $c =~ (curl|wget)[^\;\&]*\|[[:space:]]*(sudo[[:space:]]+)?(ba|z|da)?sh([[:space:]]|$) ]]; then
+    echo "a downloaded script piped into a shell"
+  elif [[ $c =~ ${sep}(pip3?|python3?${opts}-m${opts}pip)${opts}install([[:space:]]|$) ]]; then
+    echo "pip install"
+  elif [[ $c =~ ${sep}(pipx|dnf|yum|rpm-ostree|brew|cargo|uv${opts}tool)${opts}install([[:space:]]|$) ]]; then
+    echo "$(printf %s "${BASH_REMATCH[3]}" | tr -s "[:space:]" " ") install"
+  elif [[ $c =~ ${sep}npm${opts}(install|i|add)[[:space:]][^\;\&|]*(-g|--global)([[:space:]]|$) ]]; then
+    echo "npm install --global"
+  fi
+}
+for i in "${!kinds[@]}"; do
+  [ "${kinds[$i]}" = local ] || continue
+  why=$(install_risk "${cmds[$i]}")
+  if [ -n "$why" ] && [ -n "$force" ]; then
+    printf 'Warning: step %s installs on your machine (%s); --force lets it run\n  %s\n' \
+      $((i + 1)) "$why" "${cmds[$i]}" >&2
+  elif [ -n "$why" ]; then
+    printf 'Refused, nothing was run: step %s installs on your machine (%s): use the project'"'"'s .dev, install it yourself, or dev run --force\n  %s\n' \
+      $((i + 1)) "$why" "${cmds[$i]}" >&2
+    exit 2
+  fi
+done
+for i in "${!kinds[@]}"; do
+  [ "${kinds[$i]}" = host ] && continue
+  why=$(secret_risk "${cmds[$i]}")
+  if [ -n "$why" ]; then
+    printf 'Refused, nothing was run: step %s could print a secret: %s\n  %s\n' \
+      $((i + 1)) "$why" "${cmds[$i]}" >&2
+    echo "Ask Claude to rewrite the step, or run it by hand if you mean to." >&2
+    exit 2
+  fi
+done
+# A host step's script comes from your main: without a repo there's none.
+for i in "${!kinds[@]}"; do
+  if [ "$repo" = 0 ] && [ "${kinds[$i]}" = host ]; then
+    printf 'Refused, nothing was run: step %s is a host step: host steps need a repo\n' $((i + 1)) >&2
+    exit 2
+  fi
+done
+if printf '%s\n' "${kinds[@]}" | grep -qvx local; then
+  [[ $SERVER =~ ^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+$ ]] \
+    || { echo "root/host steps need a 'server user@host' line in $file" >&2; exit 2; }
+fi
+
+# --check: the mistakes the rules name that show in the file alone; runs and
+# writes nothing. Exit 0 and "ok", or 1 and one line per problem.
+if [ "$mode" = check ]; then
+  problems=()
+  devcmd='(^|[;&|(]|\$\()[[:space:]]*dev([[:space:]]|$)'
+  for i in "${!kinds[@]}"; do
+    [ -n "${notes[$i]}" ] || problems+=("step $((i + 1)): no > explanation above it")
+    [[ ${cmds[$i]} =~ $devcmd ]] \
+      && problems+=("step $((i + 1)): runs dev (the owner runs dev commands)")
+  done
+  [ -z "$dangling" ] || problems+=("after the last step: > , expect and allow lines describe the step below them")
+  [ "$repo" = 0 ] || git check-ignore -q out/actions.txt 2>/dev/null \
+    || problems+=("file: out/ is not in .gitignore")
+  [ ${#problems[@]} -eq 0 ] && { echo ok; exit 0; }
+  printf '%s\n' "${problems[@]}"; exit 1
+fi
+
+# record i: step i succeeded.
+record() {
+  printf '%s %s step %s: %s\n' "$(step_key "$1")" "$(date -Is)" $(($1 + 1)) \
+    "${title:-$file}" >>"$donef"
+}
+# dones[i]: when step i already succeeded (empty: it runs).
+dones=(); todo=0
+for i in "${!kinds[@]}"; do
+  t=""
+  if [ -z "$force" ] && [ -f "$donef" ]; then
+    t=$(awk -v k="$(step_key "$i")" '$1 == k { t = $2 } END { if (t) print t }' "$donef")
+  fi
+  dones+=("$t"); [ -n "$t" ] || todo=$((todo + 1))
+done
+
+echo "${title:-Steps in $file}"
+for i in "${!kinds[@]}"; do
+  printf '\n  %2d. %-5s %s\n' $((i + 1)) "${kinds[$i]}" "${cmds[$i]}"
+  printf '%s' "${notes[$i]}" | sed 's/^ */        /'
+  [ -z "${dones[$i]}" ] || printf '        (ran %s: skipped)\n' "${dones[$i]}"
+done
+echo
+if [ "$todo" = 0 ]; then
+  mkdir -p out
+  echo "run-actions $(date -Is): ${title:-$file}: every step already ran, nothing run (dev run --force runs them again)" | tee "$logf"
+  exit 0
+fi
+read -r -p "Run them? [Y/n] " answer
+case "$answer" in ""|y|Y) ;; *) exit 1 ;; esac
+
+mkdir -p out
+{ echo "run-actions $(date -Is): ${title:-$file}"; } >"$logf"
+
+# remote_group from to — runs steps from..to-1 (all host/root) in one SSH
+# session as root. The runner below is sent gzipped on the command line, with
+# host scripts (and host/lib.sh) taken from your main.
+remote_group() {
+  local from=$1 to=$2 main="" runner i s src
+  b64() { printf %s "$1" | base64 -w0; }
+  # Only host steps need main: root steps also run without a repo.
+  for ((i = from; i < to; i++)); do
+    if [ "${kinds[$i]}" = host ]; then main=$(git rev-parse main); break; fi
+  done
+  runner=$(
+    echo "$CHECKS"
+    cat <<'EOF'
+set -uo pipefail
+abort() { printf '\nABORTED at step %s: %s\n' "$STEP" "$*"; exit 1; }
+dec() { printf %s "$1" | base64 -d; }
+# checked file expect allow — output checks plus new SELinux denials.
+checked() {
+  local why
+  why=$(check_output "$@") || abort "$why"
+  if command -v ausearch >/dev/null; then
+    why=$(ausearch -m AVC,USER_AVC -i --start $T0 2>/dev/null | grep -m 5 denied) \
+      && abort "new SELinux denial:
+$why"
+  fi
+  return 0
+}
+note() { [ -z "$1" ] || dec "$1" | sed 's/^ */   > /'; }
+mark() { STEP=$1; T0=$(date '+%x %T'); }   # ausearch reads the locale's date
+ran() { printf '   (step %s ran)\n' "$STEP"; }  # read back by run-actions
+step_host() {  # step note expect allow b64-src name args...
+  local note=$2 expect=$(dec "$3") allow=$(dec "$4") src=$5 name=$6 out a
+  mark "$1"; shift 6
+  out=$(mktemp)
+  printf '\n######## %s. %s %s (dry run)\n' "$STEP" "$name" "$*"
+  note "$note"
+  bash -c "$(dec "$src" | gunzip)" "$name" --main="$MAIN" "$@" 2>&1 | tee "$out"
+  [ "${PIPESTATUS[0]}" = 0 ] || abort "$name dry run failed"
+  checked "$out" 'change\(s\) pending|Nothing to change' "$allow"
+  if grep -q 'Nothing to change' "$out"; then rm -f "$out"; ran; return; fi
+  read -r -p "Apply $name $*? [Y/s/n] (Enter = apply, s = skip, n = stop) " a </dev/tty
+  case "$a" in
+    ""|y|Y) printf '\n######## %s. %s %s --apply\n' "$STEP" "$name" "$*"
+       bash -c "$(dec "$src" | gunzip)" "$name" --main="$MAIN" "$@" --apply 2>&1 | tee "$out"
+       [ "${PIPESTATUS[0]}" = 0 ] || abort "$name --apply failed"
+       checked "$out" "${expect:-Applied [0-9]+ change|Nothing to change}" "$allow"; ran ;;
+    s|S) echo "   skipped" ;;
+    *) abort "you stopped" ;;
+  esac
+  rm -f "$out"
+}
+step_root() {  # step note expect allow b64-command
+  local cmd=$(dec "$5") expect=$(dec "$3") allow=$(dec "$4") out a
+  mark "$1"
+  printf '\n######## %s. root: %s\n' "$STEP" "$cmd"
+  note "$2"
+  read -r -p "Run it? [Y/s/n] (Enter = run, s = skip, n = stop) " a </dev/tty
+  case "$a" in
+    ""|y|Y) out=$(mktemp)
+       bash -c "$cmd" 2>&1 | tee "$out"
+       [ "${PIPESTATUS[0]}" = 0 ] || abort "command failed"
+       checked "$out" "$expect" "$allow"; ran
+       rm -f "$out" ;;
+    s|S) echo "   skipped" ;;
+    *) abort "you stopped" ;;
+  esac
+}
+EOF
+    echo "MAIN=$main"
+    for ((i = from; i < to; i++)); do
+      if [ -n "${dones[$i]}" ]; then
+        printf 'echo %q\n' "######## $((i + 1)). ${kinds[$i]}: ${cmds[$i]} (ran ${dones[$i]}: skipped)"
+      elif [ "${kinds[$i]}" = host ]; then
+        read -ra words <<<"${cmds[$i]}"
+        s=${words[0]}
+        src=$( { git show main:host/lib.sh 2>/dev/null || true; echo; git show "main:host/$s"; } | gzip -9 | base64 -w0 ) \
+          || { echo "host/$s isn't in your main" >&2; return 1; }
+        printf 'step_host %q %q %q %q %q %q' "$((i + 1))" "$(b64 "${notes[$i]}")" \
+          "$(b64 "${expects[$i]}")" "$(b64 "${allows[$i]}")" "$src" "$s"
+        # printf with no arguments would still print one '' (an empty argument)
+        if [ ${#words[@]} -gt 1 ]; then printf ' %q' "${words[@]:1}"; fi; echo
+      else
+        printf 'step_root %q %q %q %q %q\n' "$((i + 1))" "$(b64 "${notes[$i]}")" \
+          "$(b64 "${expects[$i]}")" "$(b64 "${allows[$i]}")" "$(b64 "${cmds[$i]}")"
+      fi
+    done
+  )
+  # sudo -k: forget the password at the end, so nothing outlasts this run.
+  ssh -t "$SERVER" "sudo bash -c \"\$(echo $(printf %s "$runner" | gzip -9 | base64 -w0) | base64 -d | gunzip)\"; rc=\$?; sudo -k; exit \$rc"
+}
+
+i=0; n=${#kinds[@]}
+while [ "$i" -lt "$n" ]; do
+  if [ "${kinds[$i]}" = local ] && [ -n "${dones[$i]}" ]; then
+    printf '\n######## %s. local: %s\n   (ran %s: skipped)\n' $((i + 1)) "${cmds[$i]}" \
+      "${dones[$i]}" | tee -a "$logf"
+    i=$((i + 1))
+  elif [ "${kinds[$i]}" = local ]; then
+    out=$(mktemp)
+    {
+      printf '\n######## %s. local: %s\n' $((i + 1)) "${cmds[$i]}"
+      printf '%s' "${notes[$i]}" | sed 's/^ */   > /'
+    } | tee -a "$logf"
+    rc=0  # set -e would end the script here without the ABORTED line
+    bash -c "${cmds[$i]}" 2>&1 | tee "$out" | tee -a "$logf" || rc=${PIPESTATUS[0]}
+    why=""
+    if [ "$rc" != 0 ]; then why="local step failed (exit $rc)"
+    else why=$(check_output "$out" "${expects[$i]}" "${allows[$i]}") && why=""
+    fi
+    rm -f "$out"
+    if [ -n "$why" ]; then
+      printf '\nABORTED at step %s: %s\n' $((i + 1)) "$why" | tee -a "$logf"
+      echo "(saved to $logf)"; exit 1
+    fi
+    record "$i"
+    i=$((i + 1))
+  else
+    j=$i
+    while [ "$j" -lt "$n" ] && [ "${kinds[$j]}" != local ]; do j=$((j + 1)); done
+    out=$(mktemp)
+    rc=0
+    remote_group "$i" "$j" 2>&1 | tee "$out" | tee -a "$logf" || rc=${PIPESTATUS[0]}
+    # Record the steps the server reported as ran, even after an abort.
+    while read -r k; do record $((k - 1)); done \
+      < <(sed -nE 's/^   \(step ([0-9]+) ran\)\r?$/\1/p' "$out")
+    rm -f "$out"
+    [ "$rc" = 0 ] || { echo "(saved to $logf)"; exit 1; }
+    i=$j
+  fi
+done
+echo "Done." >>"$logf"; echo "Done. (saved to $logf)"
+exit
+}

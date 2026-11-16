@@ -1,0 +1,58 @@
+run-actions 2026-11-15T23:42:59+01:00: claude-box: project-defaults acceptance, what dev new laid down in demo-app
+
+######## 1. local: ls -A ~/Projects/demo-app ~/Projects/demo-app/app-backend ~/Projects/demo-app/app-backend/docs ~/Projects/demo-app/app-backend/tests ~/Projects/demo-app/app-frontend ~/Projects/demo-app/app-docs
+   > Lists the group folder and the three new projects' files (read only), for the criterion "dev new lays down the default": each should have README.md, CLAUDE.md, docs/ (direction, system, change), tests/ and .gitignore, from the workflow plugin's starter.
+/home/mc/Projects/demo-app:
+app-backend
+app-docs
+app-frontend
+
+/home/mc/Projects/demo-app/app-backend:
+CLAUDE.md
+docs
+.git
+.gitignore
+README.md
+tests
+
+/home/mc/Projects/demo-app/app-backend/docs:
+change
+direction
+system
+
+/home/mc/Projects/demo-app/app-backend/tests:
+check_links.py
+run.sh
+
+/home/mc/Projects/demo-app/app-docs:
+CLAUDE.md
+docs
+.git
+.gitignore
+README.md
+tests
+
+/home/mc/Projects/demo-app/app-frontend:
+CLAUDE.md
+docs
+.git
+.gitignore
+README.md
+tests
+
+######## 2. local: for p in app-backend app-frontend app-docs; do echo "== $p"; git -C ~/Projects/demo-app/$p log --oneline; git -C ~/Projects/demo-app/$p status --short; done
+   > Shows each project's one commit and that its tree is clean (read only): the starter laid down and committed as "Start <name>".
+== app-backend
+ad8cd45 Start app-backend
+== app-frontend
+b5143a4 Start app-frontend
+== app-docs
+5c99a9b Start app-docs
+
+######## 3. local: cd ~/Projects/demo-app/app-backend && tests/run.sh
+   > Runs app-backend's own checks (read only, a few seconds): they pass straight after dev new.
+== Links
+links: 5 files, 0 problems
+
+ALL PASSED
+Done.

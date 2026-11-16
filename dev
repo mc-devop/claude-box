@@ -1,0 +1,233 @@
+#!/usr/bin/env bash
+# dev: run Claude Code in a container that works in only the project you're
+# in and reads your other projects.
+#
+#   dev install          one-time, from the clone (./dev install): puts dev on
+#                        your PATH (~/.local/bin/dev links here), then runs dev init
+#   dev init             write ~/.claude/.dev if there's none (asks Claude's git
+#                        identity), build the image, log Claude in
+#   dev new [<group>/]<name>  new project in ~/Projects, with the starters of
+#                        the plugins your config uses
+#   dev claude [--new] [options]  start Claude in this project (from its top
+#                        folder), in its running box if there is one (--new:
+#                        a box of its own); options go to Claude, e.g. --continue.
+#                        Outside a project (no .git, not in ~/Projects): a new
+#                        scratch session, in ~/.claude/scratch/<name>
+#   dev claude --scratch [name] [options]  carry on in a scratch session, from
+#                        any folder (no name: pick one from the list)
+#   dev scratch [--rm <name>]  list the scratch sessions, last used first
+#                        (--rm: delete one, with its conversations, after asking)
+#   dev add <kind> <name>...  add to this project's .dev (kinds: dnf npm pip
+#                        plugin rules port group); the next dev claude installs after asking
+#   dev remove <kind> <name>...  remove from this project's .dev
+#   dev run [--force] [file]  run the steps Claude wrote to out/actions.txt
+#                        (see run-actions); --force reruns steps that already ran
+#                        and lets install steps run
+#   dev run --scratch <name> [--force] [file]  the same, in a scratch session
+#   dev shell [--new]    a shell in the project's running box, or a new one
+#   dev update           pull a new claude-box (after your yes); the next dev claude applies it
+#   dev build            rebuild the image for a newer Claude Code or Fedora
+#   dev reset            remove the images and boxes (your ~/.claude stays)
+#   dev uninstall        undo dev install: what dev reset removes, dev's state
+#                        (~/.local/state/claude-box) and the dev link on your PATH
+#
+# Your config: ~/.claude/.dev (every kind: core/defaults.dev). dev shows a
+# change to it and applies it at the next box start after you say yes.
+set -euo pipefail
+
+IMAGE=localhost/claude-box
+BOX_IMAGE="$IMAGE"      # the image a project's box runs on (choose_image)
+PUBLISH=()              # the box's published ports (choose_ports)
+MOUNTS=()               # the box's read-only rules from your plugin and rules lines (choose_mounts)
+PROJECT_APPROVED=""      # the project's approved plugin and rules lines (choose_mounts)
+GROUP=""                # the project's group (project_group)
+SHARE=()                # makes run_box start the project's shared box (shared_box)
+TTY_OPTS=()             # podman's -i and -t for the command at hand (term_opts)
+SCRATCH=""              # the scratch session's name while dev works on one (enter_scratch)
+LAYER="$IMAGE.user"     # your config's layer: no project's image name has a "."
+BASE_IMAGE="$IMAGE"     # what boxes and project images build on: the base or your layer
+# What you approved of your config, for the diff and the runtime values.
+# Under your home, outside every box's mounts.
+APPROVED="${XDG_STATE_HOME:-$HOME/.local/state}/claude-box/approved"
+# Runtime values (load_runtime): the defaults, or your approved config.
+PROJECTS="${DEV_PROJECTS:-$HOME/Projects}"
+CAP_MEMORY="${DEV_MEMORY:-}" CAP_CPUS="${DEV_CPUS:-}" REMOTE_CONTROL=on
+HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+
+# shellcheck source=core/lib/common.sh
+. "$HERE/core/lib/common.sh"
+# shellcheck source=core/lib/conf.sh
+. "$HERE/core/lib/conf.sh"
+# shellcheck source=core/lib/layer.sh
+. "$HERE/core/lib/layer.sh"
+# shellcheck source=core/lib/seed.sh
+. "$HERE/core/lib/seed.sh"
+# shellcheck source=core/lib/mounts.sh
+. "$HERE/core/lib/mounts.sh"
+# shellcheck source=core/lib/project.sh
+. "$HERE/core/lib/project.sh"
+# shellcheck source=core/lib/groups.sh
+. "$HERE/core/lib/groups.sh"
+# shellcheck source=core/lib/box.sh
+. "$HERE/core/lib/box.sh"
+# shellcheck source=core/lib/scratch.sh
+. "$HERE/core/lib/scratch.sh"
+
+# Bash reads a script as it runs it, and dev is a link into this repo, so
+# the file can change under a running box: the whole command is one case,
+# with exit on its last line.
+# The folder's real path: through a symlink, the project is the folder itself.
+cd -P . || die "Can't read the real path of $PWD."
+case "${1:-}" in init|new|claude|add|shell) load_conf; load_runtime ;; esac
+case "${1:-}" in
+    ""|-h|--help|help) sed -n '2,/^$/{/^#/p}' "$0" | sed 's/^# \{0,1\}//' ;;
+    init)
+        if [ ! -e "$CONF_FILE" ]; then
+            mkdir -p "$HOME/.claude"
+            # Claude's git identity: Enter, or no terminal, keeps the default;
+            # one read_conf refuses is asked again, three times at most.
+            who="Claude <claude@claude-box.invalid>"
+            if [ -t 0 ]; then
+                t="$(mktemp)"
+                for _ in 1 2 3; do
+                    printf "Claude's git identity, for its commits [%s]: " "$who"
+                    read -r ans || break
+                    [ -n "$ans" ] || break
+                    printf 'identity %s\n' "$ans" > "$t"
+                    if ( read_conf "$t" ) > /dev/null 2>&1; then who="$ans"; break; fi
+                    echo "  Name <email>, e.g. Ann <ann@example.org>"
+                done
+                rm -f "$t"
+            fi
+            printf '%s\n' "# What's in every box. Every kind, with examples: $HERE/core/defaults.dev" \
+                '# One "<kind> <value>" per line; dev shows each change and applies it after you say yes.' \
+                '' '# The name and email on Claude'"'"'s commits.' "identity $who" \
+                '' '# The workflow: documents in three families, specs and plans, the closing skill.' \
+                'plugin workflow' \
+                '' '# Messages from your sessions of your group'"'"'s projects go on as your prompt; delete to hold them.' \
+                'autotake group' > "$CONF_FILE"
+            echo "Wrote your config, ~/.claude/.dev (every kind: core/defaults.dev)."; echo
+        fi
+        build
+        echo; echo "Log Claude in: open the URL it shows in your browser, then type /exit."
+        box -- claude || true
+        echo; echo "Ready. New project: dev new <name>   Existing one: cd into it, then dev claude" ;;
+    new)
+        name="${2:-}"; [[ "$name" =~ ^([A-Za-z0-9][A-Za-z0-9._-]*/)?[A-Za-z0-9][A-Za-z0-9._-]*$ ]] \
+            || die "Usage: dev new [<group folder>/]<name>  (letters, digits, . _ -; starting with a letter or digit)"
+        if [[ "$name" == */* ]]; then   # only into a group folder of your config
+            folders="$(group_folders)" || exit 1
+            grep -qxF "$(realpath -m -- "$PROJECTS/${name%/*}")" <<< "$folders" \
+                || die "${name%/*} is not a group folder of your config (group <folder>): dev new <name>"
+        fi
+        dir="$PROJECTS/$name"
+        [ ! -e "$dir" ] || die "$dir already exists."
+        mkdir -p "$dir" && cd "$dir"
+        if ! { git init -q -b main && printf '# %s\n' "${name##*/}" > README.md && lay_starters "${name##*/}" \
+               && git add -A && git commit -q -m "Start ${name##*/}"; }; then
+            cd / && rm -rf "$dir"      # don't leave a half-made project behind
+            die "Couldn't make the project (see above; is your git name/email set?). Nothing was created."
+        fi
+        echo "Created $dir"
+        echo; echo "Start Claude: cd $dir && dev claude" ;;
+    plugins)
+        die "dev plugins is gone: add \"plugin <name>@<marketplace> <owner/repo>\" to ~/.claude/.dev (every project) or the project's .dev" ;;
+    -*)     die "Options go to Claude now: dev claude $*" ;;
+    # Remote Control under the project's name: other sessions reach it by name.
+    claude) shift
+            if [ "${1:-}" = --scratch ]; then
+                shift
+                if [ $# -gt 0 ] && [[ "$1" != -* ]]; then name="$1"; shift
+                else name="$(pick_scratch)" || exit 1; fi
+                for a in "$@"; do [ "$a" != --new ] || die "--new is for projects; a scratch has one box."; done
+                check_scratch "$name"; enter_scratch "$name"
+                # Carry on with its last conversation, unless a Claude session
+                # in its box may have it open: then a new one, and say so.
+                cont=(--continue)
+                if [[ "$(box_state "claude-box-scratch-$name")" == true\ * ]] && live_claude "claude-box-scratch-$name"; then
+                    cont=()
+                    echo "$name has a session running: this is a new conversation (add --continue to resume the last one)" >&2
+                fi
+                rc=(); [ "$REMOTE_CONTROL" = off ] || rc=(--remote-control "scratch-$name")
+                shared_box claude "${rc[@]}" "${cont[@]}" "$@"
+            elif [ "${1:-}" = --new ]; then
+                shift; refuse_group_folder
+                is_project && [ "${1:-}" != --scratch ] || die "--new is for projects; a scratch has one box."
+                choose_layer >&2; choose_mounts >&2; choose_image; choose_ports
+                rc=(); [ "$REMOTE_CONTROL" = off ] || rc=(--remote-control "$(basename "$PWD")")
+                run_box claude "${rc[@]}" "$@"
+            else
+                refuse_group_folder; is_project || new_scratch
+                rc=(); [ "$REMOTE_CONTROL" = off ] || rc=(--remote-control "$(basename "$(work_dir)")")
+                shared_box claude "${rc[@]}" "$@"
+            fi ;;
+    scratch)
+        scratch_root
+        if [ $# -eq 1 ]; then
+            rows="$(scratch_rows)"
+            if [ -z "$rows" ]; then echo "No scratch sessions."; else list_scratches <<< "$rows"; fi
+        elif [ "$2" = --rm ] && [ $# -eq 3 ]; then
+            check_scratch "$3"
+            [[ "$(box_state "claude-box-scratch-$3")" != true\ * ]] || die "$3's box is running: end its sessions first."
+            # Its conversations and memory: Claude Code names the folder
+            # after /work/scratch-<name>.
+            conv="$HOME/.claude/projects/-work-scratch-$3"
+            printf 'Removes:\n  the scratch:        %s\n  its conversations:  %s  (Claude Code'"'"'s own store, not a project)\nDelete scratch session %s? [y/N] ' \
+                "$(scratch_dir "$3")" "$conv" "$3"
+            read -r ans || true
+            [[ "${ans:-}" == [yY]* ]] || die "Cancelled."
+            rm -rf "$(scratch_dir "$3")" "$conv"
+            echo "Deleted $3."
+        else die "Usage: dev scratch [--rm <name>]"; fi ;;
+    add|remove) is_project || not_project; dev_edit "$@" ;;
+    shell)  refuse_group_folder; is_project || not_project
+            if [ "${2:-}" = --new ]; then choose_layer >&2; choose_mounts >&2; choose_image; choose_ports; run_box bash
+            else shared_box bash; fi ;;
+    run)    shift
+            if [ "${1:-}" = --scratch ]; then
+                check_scratch "${2:-}"; enter_scratch "$2"; shift 2
+            else [ -d .git ] || die "Run this from the top folder of a git repo (no .git here)."; fi
+            exec "$HERE/core/bin/run-actions" "$@" ;;
+    build)  build ;;
+    update)     # fast-forward the clone's main after your yes; dev claude applies it
+        up="$(git -C "$HERE" rev-parse --abbrev-ref 'main@{upstream}' 2>/dev/null)" \
+            || die "main has no upstream: git -C $HERE branch -u origin/main main"
+        git -C "$HERE" fetch --quiet "${up%%/*}" || die "Couldn't fetch from ${up%%/*} (see above)."
+        [ -z "$(git -C "$HERE" rev-list 'main@{upstream}..main')" ] \
+            || die "main has commits the upstream lacks: dev update only fast-forwards"
+        coming="$(git -C "$HERE" log --oneline 'main..main@{upstream}')"
+        if [ -z "$coming" ]; then echo "claude-box is up to date."; exit 0; fi
+        echo "Coming from $up:"; sed 's/^/  /' <<< "$coming"
+        ask "Pull them?" || exit 0
+        if [ "$(git -C "$HERE" branch --show-current)" = main ]; then
+            git -C "$HERE" merge --ff-only --quiet 'main@{upstream}'
+        else    # main isn't checked out: moved without touching the checkout
+            git -C "$HERE" fetch --quiet . "refs/remotes/$up:refs/heads/main"
+        fi || die "Couldn't move main (see above)."
+        echo "Done. The next dev claude shows what changed in core and your plugins, and applies it after your yes." ;;
+    install)
+        mkdir -p "$HOME/.local/bin"
+        ln -sfn "$HERE/dev" "$HOME/.local/bin/dev"
+        echo "Linked ~/.local/bin/dev -> $HERE/dev"; echo
+        exec "$HERE/dev" init ;;
+    reset|uninstall)
+        state="$(dirname "$APPROVED")"
+        if [ "$1" = reset ]; then printf 'Remove the images and boxes? [y/N] '
+        else printf 'Remove claude-box: the images, boxes, %s and the dev on your PATH? [y/N] ' "$state"; fi
+        read -r ans || true
+        [[ "${ans:-}" == [yY]* ]] || die "Cancelled."
+        mapfile -t ids < <(podman ps -aq --filter "name=^claude-box-")
+        [ ${#ids[@]} -eq 0 ] || podman rm -f -v "${ids[@]}" > /dev/null || true
+        mapfile -t ids < <(podman images -q --filter "reference=$IMAGE-*")
+        [ ${#ids[@]} -eq 0 ] || podman rmi -f "${ids[@]}" 2>/dev/null || true
+        podman rmi -f "$LAYER" "$IMAGE" 2>/dev/null || true
+        rm -rf "$APPROVED" "$APPROVED-old"
+        if [ "$1" = uninstall ]; then
+            rm -rf "$state"
+            [ "$(readlink "$HOME/.local/bin/dev")" != "$HERE/dev" ] || rm -f "$HOME/.local/bin/dev"
+            echo "Done. Your project folders, ~/.claude and this clone are untouched."
+            echo "To remove the clone too: rm -rf $HERE"
+        else echo "Done. Your project folders and ~/.claude are untouched."; fi
+        echo "To remove Claude's login, settings and plugins too: rm -rf ~/.claude" ;;
+    *) die "Unknown command: $1  (dev help)" ;;
+esac; exit

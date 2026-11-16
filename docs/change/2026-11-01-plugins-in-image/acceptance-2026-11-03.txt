@@ -1,0 +1,57 @@
+# plugins-in-image acceptance, second run, 2026-11-03 (main 7ff6d22)
+
+## In claude-box's new box: mounts at ~/.claude/plugins
+/home/claude/.claude/plugins btrfs
+/home/claude/.claude/plugins/data btrfs
+/home/claude/.claude/plugins/store btrfs
+
+## The check command (sent to the three projects), here
+c4m@c4-model-skill 2.0.0 /usr/local/share/claude-box/seed/cache/c4-model-skill/c4m/2.0.0
+modularity@vladikk-modularity 1.5.0 /usr/local/share/claude-box/seed/cache/vladikk-modularity/modularity/1.5.0
+superpowers@superpowers-marketplace 7.0.2 /usr/local/share/claude-box/seed/cache/superpowers-marketplace/superpowers/7.0.2
+
+## The approved seed's versions
+c4m@c4-model-skill 2.0.0
+modularity@vladikk-modularity 1.5.0
+superpowers@superpowers-marketplace 7.0.2
+
+## The three projects' replies (out/handoff-*.md)
+one project: c4m 2.0.0, modularity 1.5.0, superpowers 7.0.2, every path under /usr/local/share/claude-box/seed/cache/
+a third project: c4m 2.0.0, modularity 1.5.0, superpowers 7.0.1, all paths under the seed; first run printed nothing (a box started before the merge)
+another project: c4m 2.0.0, modularity 1.5.0, superpowers 7.0.2; every path under the seed
+
+## First session in a fresh throwaway box (dev run, first-session-check.sh)
+session 1: init reports: c4m@c4-model-skill modularity@vladikk-modularity superpowers@superpowers-marketplace; debug: 3 skipped as orphaned, 1 sync, 3 from the seed, 9 skill loads
+session 2: init reports: c4m@c4-model-skill modularity@vladikk-modularity superpowers@superpowers-marketplace; debug: 0 skipped as orphaned, 0 sync, 5 from the seed, 12 skill loads
+(claude -p waits for the sync; an interactive first session asks for /reload-plugins instead: the owner, 2026-11-03)
+# session 1 debug lines
+[DEBUG] Loaded 1 skills from plugin c4m custom path: /usr/local/share/claude-box/seed/cache/c4-model-skill/c4m/2.0.0/skills/c
+[DEBUG] Loaded 15 skills from plugin superpowers default directory
+[DEBUG] Loaded 4 skills from plugin modularity default directory
+[DEBUG] Skipping orphaned enabledPlugins entry c4m@c4-model-skill: marketplace not registered
+[DEBUG] Skipping orphaned enabledPlugins entry modularity@vladikk-modularity: marketplace not registered
+[DEBUG] Skipping orphaned enabledPlugins entry superpowers@superpowers-marketplace: marketplace not registered
+[DEBUG] Synced 3 marketplace(s) from seed dir(s)
+[DEBUG] Using seed cache for c4m@c4-model-skill at /usr/local/share/claude-box/seed/cache/c4-model-skill/c4m/2.0.0 (cache-onl
+[DEBUG] Using seed cache for modularity@vladikk-modularity at /usr/local/share/claude-box/seed/cache/vladikk-modularity/modul
+[DEBUG] Using seed cache for superpowers@superpowers-marketplace at /usr/local/share/claude-box/seed/cache/superpowers-market
+# session 2 debug lines
+[DEBUG] Loaded 1 skills from plugin c4m custom path: /usr/local/share/claude-box/seed/cache/c4-model-skill/c4m/2.0.0/skills/c
+[DEBUG] Loaded 15 skills from plugin superpowers default directory
+[DEBUG] Loaded 4 skills from plugin modularity default directory
+[DEBUG] Using seed cache for c4m@c4-model-skill at /usr/local/share/claude-box/seed/cache/c4-model-skill/c4m/2.0.0 (cache-onl
+[DEBUG] Using seed cache for c4m@c4-model-skill@2.0.0 at /usr/local/share/claude-box/seed/cache/c4-model-skill/c4m/2.0.0
+[DEBUG] Using seed cache for modularity@vladikk-modularity at /usr/local/share/claude-box/seed/cache/vladikk-modularity/modul
+[DEBUG] Using seed cache for modularity@vladikk-modularity@1.5.0 at /usr/local/share/claude-box/seed/cache/vladikk-modularity
+[DEBUG] Using seed cache for superpowers@superpowers-marketplace at /usr/local/share/claude-box/seed/cache/superpowers-market
+
+## Your ~/.claude/plugins after the first clear-up, with boxes from before the merge still running (dev run)
+installed: [('c4m@c4-model-skill', 'managed'), ('modularity@vladikk-modularity', 'managed')]
+known marketplaces: ['c4-model-skill', 'claude-plugins-official', 'superpowers-marketplace', 'vladikk-modularity']
+enabledPlugins keys: []
+marker absent from your ~/.claude/plugins
+
+## Your ~/.claude/plugins after the old boxes ended and the second clear-up (dev run)
+installed: []
+known marketplaces: ['claude-plugins-official']
+enabledPlugins keys: []

@@ -1,0 +1,30 @@
+run-actions 2026-10-30T14:41:39+01:00: claude-box: Switch to the public clone (moves this folder to ~/Projects/claude-box-archive)
+
+######## 1. local: ! podman ps --format '{{.Names}} {{.Mounts}}' | grep -w /work/claude-box || { echo "a box of claude-box still runs: /exit its sessions first"; exit 1; }; test ! -e "$HOME/Projects/claude-box-archive" || { echo "~/Projects/claude-box-archive exists"; exit 1; }; mv "$HOME/Projects/claude-box" "$HOME/Projects/claude-box-archive" && ls -d "$HOME/Projects/claude-box-archive/.git"
+   > Run this after /exit, with no box of claude-box running. Moves this
+   > clone to ~/Projects/claude-box-archive, refusing while a box has
+   > /work/claude-box mounted or while claude-box-archive exists. This run
+   > goes on in the moved folder: its log stays in
+   > ~/Projects/claude-box-archive/out/.
+/home/mc/Projects/claude-box-archive/.git
+
+######## 2. local: test ! -e "$HOME/Projects/claude-box" || { echo "~/Projects/claude-box exists"; exit 1; }; git clone -q git@github.com:mc-devop/claude-box.git "$HOME/Projects/claude-box" && cp -a "$HOME/Projects/claude-box-archive/local" "$HOME/Projects/claude-box/" && mkdir "$HOME/Projects/claude-box/out" && cp -a "$HOME/Projects/claude-box-archive/out/." "$HOME/Projects/claude-box/out/" && rm -f "$HOME/Projects/claude-box/out/actions."* && cd "$HOME/Projects/claude-box" && git log --oneline && git status --short | wc -l && ls out && readlink -f "$HOME/.local/bin/dev"
+   > Clones the new repo into ~/Projects/claude-box, refusing if that
+   > exists; copies in your local/ and out/ (handoffs, drafts, done/),
+   > without this run's actions.* files. ~/.local/bin/dev keeps pointing at
+   > ~/Projects/claude-box/dev, now the new clone's.
+457b405 claude-box
+0
+claude-box-explainer.md
+done
+[4 lines removed for the private-terms check: three handoff files and a draft, named after other projects; the full log is in the private archive]
+stranger-test.log
+stranger-test-run2.log
+stranger-test.sh
+/var/home/mc/Projects/claude-box/dev
+
+######## 3. local: gh repo archive mc-devop/claude-box-archive --yes && gh repo view mc-devop/claude-box-archive --json visibility,isArchived
+   > Archives mc-devop/claude-box-archive on GitHub (read-only, still
+   > private).
+{"isArchived":true,"visibility":"PRIVATE"}
+Done.

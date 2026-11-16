@@ -1,0 +1,46 @@
+# claude-box: Claude Code in a container that sees only one project folder.
+# Built by `dev build` (or when core changed, at the next `dev claude`) from
+# core/ as it is on the clone's main (git archive), never from the working tree.
+FROM registry.fedoraproject.org/fedora:44
+# dev removes its own leftovers by this label, never other images of yours.
+LABEL claude-box.image=1
+
+RUN dnf -y install git ripgrep findutils procps-ng ShellCheck diffutils patch python3 && dnf clean all
+
+# Rules every session reads, and auto mode's description of the box
+# (managed settings), owned by root so Claude can't change them.
+# Rebuilding the image (dev build) updates them.
+# Claude Code reads only CLAUDE.md there; it imports core's other rules.
+COPY rules/ /etc/claude-code/
+COPY managed-settings.json /etc/claude-code/
+RUN chmod 644 /etc/claude-code/* && mkdir -p /etc/claude-code/managed-settings.d
+
+# Stages a seed of marketplace plugins in a throwaway box (dev claude).
+COPY bin/stage-seed /usr/local/bin/stage-seed
+
+# The box's own mods (plugin/box-workflow), loaded by every session, and
+# run-actions, which they call read-only (--check, --status). Owned by
+# root, so a session can't change or switch them off.
+COPY plugin/box-workflow /usr/local/share/claude-box/plugins/box-workflow
+COPY bin/run-actions /usr/local/bin/run-actions
+# The hook core's managed settings run before every Bash command.
+COPY bin/no-commit-on-main /usr/local/bin/no-commit-on-main
+ENV CLAUDE_CODE_PLUGIN_DIRS=/usr/local/share/claude-box/plugins/box-workflow
+
+RUN useradd -m -u 1000 claude
+USER claude
+# dev build sets CLAUDE_BUILD to the time, so this layer is never cached.
+ARG CLAUDE_BUILD
+RUN set -o pipefail; echo "build $CLAUDE_BUILD"; curl -fsSL https://claude.ai/install.sh | bash
+
+# Claude Code owned by root, so a session can't change it; dev build
+# updates it. Claude's commits carry this identity unless your config
+# names one.
+USER root
+RUN install -m 755 "$(readlink -f /home/claude/.local/bin/claude)" /usr/local/bin/claude \
+    && rm -rf /home/claude/.local/bin/claude /home/claude/.local/share/claude \
+    && git config --system user.name Claude \
+    && git config --system user.email claude@claude-box.invalid
+USER claude
+ENV DISABLE_AUTOUPDATER=1
+WORKDIR /work

@@ -1,0 +1,28 @@
+# {{name}}
+
+_What this project owns, in one paragraph: written at the first session._
+
+## Start of a session
+
+Read the three families top-down:
+
+1. **Direction:** [docs/direction/backlog.md](docs/direction/backlog.md),
+   the only status.
+2. **Change:** the intent, spec or plan its current milestone links.
+3. **System:** [the architecture](docs/system/architecture/README.md) and
+   [the runbook](docs/system/runbook.md), before proposing anything.
+
+## Commands
+
+- `tests/run.sh`: the project's checks, Markdown links to begin with.
+  Healthy output ends with `ALL PASSED`.
+
+## Rules
+
+_This project's own rules. Where it works differently from the
+default, one line here says so: "Differs from the default:
+the rule (why)"._
+
+## Neighbours' interfaces
+
+_Links to the contracts of other projects this one relies on; none yet._

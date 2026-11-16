@@ -1,0 +1,9 @@
+run-actions 2026-11-04T08:19:43+01:00: claude-box: P5 check: a new box finds the seeds' marketplaces registered (throwaway image and box)
+
+######## 1. local: { [ -z "$(git status --porcelain)" ] || { echo "Refused: the checkout isn't clean (Claude has uncommitted changes); run again once Claude says it's committed"; false; }; } && git switch -q claude/plugins-registration && bash docs/change/2026-11-01-plugins-in-image/registration-check.sh
+   > Runs docs/change/2026-11-01-plugins-in-image/registration-check.sh from claude/plugins-registration (the checkout is on it; read the script first). Builds a throwaway image from your layer (localhost/claude-box-registration-check) with the seeds' known_marketplaces.json at ~/.claude/plugins/, removed at the end; starts one box from it, set up as dev sets up a box, its ~/.claude a temp folder, never yours. Checks the new plugins volume holds the file, Claude can write it, and a session start skips no marketplace. About a minute. Writes only under a temp folder and out/registration-check/.
+1. image built with the file: ['c4-model-skill', 'superpowers-marketplace', 'vladikk-modularity']
+2. in a new box's volume: claude 644, 1 writable
+3. a session start: 0 skipped as orphaned, 0 sync, 5 from the seed
+Done; details in out/registration-check/
+Done.

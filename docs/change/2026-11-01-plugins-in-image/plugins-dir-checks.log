@@ -1,0 +1,41 @@
+# out/actions.log of the third run, 2026-11-03 (the first two: see findings-plugins-dir-checks.md)
+1. volume: works
+2. volume: exit 0; after the box: ./data/x ./store/x 
+3. volume: 'Using seed cache': 3; the old 6.4.2 path: 0; data folder lines: 0
+1. bind: works
+2. bind: exit 0; after the box: ./data/x ./store/x 
+3. bind: 'Using seed cache': 3; the old 6.4.2 path: 0; data folder lines: 0
+1. cachedir: works
+2. cachedir: exit 0; after the box: ./data/x ./store/x 
+3. cachedir: 'Using seed cache': 3; the old 6.4.2 path: 0; data folder lines: 0
+Done; details in out/plugins-dir-checks/
+Done.
+
+# out/plugins-dir-checks/1-candidates.txt
+volume
+claude 755
+entries:
+writable
+
+bind
+claude 755
+entries:
+writable
+
+cachedir
+claude 755
+entries:
+writable
+
+# out/plugins-dir-checks/3-volume-lines.txt
+2026-11-03T21:08:55.535Z [DEBUG] Using seed cache for c4m@c4-model-skill at /usr/local/share/claude-box/seed/cache/c4-model-skill/c4m/2.0.0 (cache-only)
+2026-11-03T21:08:55.536Z [DEBUG] Using seed cache for superpowers@superpowers-marketplace at /usr/local/share/claude-box/seed/cache/superpowers-marketplace/superpowers/7.0.1 (cache-only)
+2026-11-03T21:08:55.537Z [DEBUG] Using seed cache for modularity@vladikk-modularity at /usr/local/share/claude-box/seed/cache/vladikk-modularity/modularity/1.5.0 (cache-only)
+# out/plugins-dir-checks/3-bind-lines.txt
+2026-11-03T21:08:56.750Z [DEBUG] Using seed cache for c4m@c4-model-skill at /usr/local/share/claude-box/seed/cache/c4-model-skill/c4m/2.0.0 (cache-only)
+2026-11-03T21:08:56.750Z [DEBUG] Using seed cache for superpowers@superpowers-marketplace at /usr/local/share/claude-box/seed/cache/superpowers-marketplace/superpowers/7.0.1 (cache-only)
+2026-11-03T21:08:56.751Z [DEBUG] Using seed cache for modularity@vladikk-modularity at /usr/local/share/claude-box/seed/cache/vladikk-modularity/modularity/1.5.0 (cache-only)
+# out/plugins-dir-checks/3-cachedir-lines.txt
+2026-11-03T21:08:57.930Z [DEBUG] Using seed cache for c4m@c4-model-skill at /usr/local/share/claude-box/seed/cache/c4-model-skill/c4m/2.0.0 (cache-only)
+2026-11-03T21:08:57.930Z [DEBUG] Using seed cache for modularity@vladikk-modularity at /usr/local/share/claude-box/seed/cache/vladikk-modularity/modularity/1.5.0 (cache-only)
+2026-11-03T21:08:57.930Z [DEBUG] Using seed cache for superpowers@superpowers-marketplace at /usr/local/share/claude-box/seed/cache/superpowers-marketplace/superpowers/7.0.1 (cache-only)

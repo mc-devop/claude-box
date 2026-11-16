@@ -1,0 +1,28 @@
+# plugins-in-image acceptance, first run, 2026-11-02, in claude-box's own box (image of main 00f216d)
+
+## claude -p --output-format stream-json --verbose: the init event's plugins (marketplace ones)
+c4m@c4-model-skill 2.0.0 /home/claude/.claude/plugins/cache/c4-model-skill/c4m/2.0.0
+modularity@vladikk-modularity 1.5.0 /home/claude/.claude/plugins/cache/vladikk-modularity/modularity/1.5.0
+superpowers@superpowers-marketplace 6.4.2 /home/claude/.claude/plugins/cache/superpowers-marketplace/superpowers/6.4.2
+
+## The seed's installed_plugins.json: versions
+c4m@c4-model-skill 2.0.0 /seed/cache/c4-model-skill/c4m/2.0.0
+modularity@vladikk-modularity 1.5.0 /seed/cache/vladikk-modularity/modularity/1.5.0
+superpowers@superpowers-marketplace 7.0.1 /seed/cache/superpowers-marketplace/superpowers/7.0.1
+
+## ~/.claude/plugins/installed_plugins.json: scope, version, path
+modularity@vladikk-modularity managed 1.5.0 /home/claude/.claude/plugins/cache/vladikk-modularity/modularity/1.5.0 2026-11-01T16:21:53.069Z
+c4m@c4-model-skill managed 2.0.0 /home/claude/.claude/plugins/cache/c4-model-skill/c4m/2.0.0 2026-11-01T16:21:53.069Z
+superpowers@superpowers-marketplace managed 6.4.2 /home/claude/.claude/plugins/cache/superpowers-marketplace/superpowers/6.4.2 2026-11-01T16:21:53.069Z
+
+## A session start's debug log (claude -p --debug-file), lines naming the install records, the seed or superpowers' path
+2026-11-02T19:20:52.874Z [DEBUG] Attempting to load skills from plugin superpowers default skillsPath: /home/claude/.claude/plugins/cache/superpowers-marketplace/superpowers/6.4.2/skills
+2026-11-02T19:20:53.055Z [DEBUG] Hooks: SessionStart:startup ["/home/claude/.claude/plugins/cache/superpowers-marketplace/superpowers/6.4.2/hooks/run-hook.cmd" session-start] (plugin superpowers@superpowers-marketplace) 
+2026-11-02T19:20:52.845Z [DEBUG] Loaded 3 installed plugins from /home/claude/.claude/plugins/installed_plugins.json
+2026-11-02T19:20:52.868Z [DEBUG] Read hooks.json for plugin superpowers (enabled=true): /home/claude/.claude/plugins/cache/superpowers-marketplace/superpowers/6.4.2/hooks/hooks.json
+
+## Other checks
+CLAUDE_CODE_PLUGIN_SEED_DIR=/usr/local/share/claude-box/seed
+touch: cannot touch '/usr/local/share/claude-box/seed/x': Permission denied
+settings.json enabledPlugins: {}
+No line "Using seed cache" in the whole debug log (grep -c: 0).

@@ -1,0 +1,35 @@
+{
+  "autoMode": {
+    "environment": [
+      "**Host containment**: Claude Code runs in claude-box, a rootless Podman container on the owner's laptop. It sees one project read-write at `/work/<name>` (the working directory) with that project's `.git`, where Claude commits to `claude/*` branches only; the owner's other projects read-only at `/projects`; and the owner's own Claude home `~/.claude`, mounted at `/home/claude/.claude`: their settings, hooks, memory and instructions, so changing anything there except the session's own memory folder, `~/.claude/projects/<folder>/memory/`, is self-modification. Nothing else of the laptop is mounted: no SSH keys, no git credentials, no other home folders. Inside the box, and fine without a block: reading and searching any file the box sees (including saved tool results and documentation about Claude Code or auto mode), fetching public documentation, writing scratch and build files, running the project's tests and checks, and messages to the owner's other claude-box sessions (SendMessage to a session ListAgents shows under a project's folder name), whose content may come from `/projects`: the receiving box holds each one until the owner releases it, unless the owner let its sender through (autotake: senders the owner named, or their project's group members when the owner's config says so). Messages to any other session, and secrets or anything from `~/.claude` in any message, are vetted as usual. Outside the box, vetted as usual: pushing; changing the project's `.git` hooks or `.git` config, or files the owner runs on the laptop with their own rights (scripts, Makefiles, Containerfiles, CI and editor settings, `out/actions.txt`); any change to `/projects` or to `~/.claude` outside that memory folder; content from `/projects` leaving the box other than in such messages, and any content from `~/.claude` leaving it; and the owner's laptop and servers, which are reached only through `dev run`, run by the owner from `out/actions.txt`. No cloud metadata endpoint or host credentials are task credentials."
+    ]
+  },
+  "env": {
+    "DISABLE_TELEMETRY": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_FEEDBACK_COMMAND": "1",
+    "SUPERPOWERS_DISABLE_TELEMETRY": "1"
+  },
+  "permissions": {
+    "ask": [
+      "Edit(~/.claude/CLAUDE.md)",
+      "Edit(~/.claude/.dev)",
+      "Edit(~/.claude/rules/**)",
+      "Edit(~/.claude/settings.json)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/local/bin/no-commit-on-main",
+            "statusMessage": "Checking branch before commit"
+          }
+        ]
+      }
+    ]
+  }
+}

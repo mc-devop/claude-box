@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Runs inside a staging box (core/lib/seed.sh), which sees only the seed:
+#   stage-seed <owner/repo> <name>@<marketplace> [<owner/repo> <name>@<marketplace>]...
+# Claude Code installs each plugin into the seed CLAUDE_CODE_PLUGIN_CACHE_DIR
+# names, adding its marketplace first. Stops at the first failure.
+set -uo pipefail
+mkdir -p "${CLAUDE_CONFIG_DIR:?}"
+declare -A added=()
+while [ $# -ge 2 ]; do
+    if [ -z "${added[$1]:-}" ]; then
+        claude plugin marketplace add "$1" || { echo "couldn't add the marketplace $1" >&2; exit 1; }
+        added[$1]=1
+    fi
+    claude plugin install "$2" || { echo "couldn't install $2" >&2; exit 1; }
+    shift 2
+done

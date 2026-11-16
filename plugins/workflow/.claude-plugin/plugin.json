@@ -1,0 +1,11 @@
+{
+  "name": "workflow",
+  "version": "0.2.0",
+  "description": "A way of working: documents in three families, specs and plans, the closing skill",
+  "dependencies": ["superpowers@superpowers-marketplace"],
+  "metadata": {
+    "claude-box": {
+      "marketplaces": { "superpowers-marketplace": "obra/superpowers-marketplace" }
+    }
+  }
+}

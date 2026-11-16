@@ -1,0 +1,10 @@
+run-actions 2026-10-30T15:02:30+01:00: claude-box: Read both GitHub repos (publishing acceptance)
+
+######## 1. local: gh repo view mc-devop/claude-box --json nameWithOwner,visibility,isArchived && gh repo view mc-devop/claude-box-archive --json nameWithOwner,visibility,isArchived
+   > Reads only. Shows visibility and archived state of the new repo
+   > (expected: private, not archived, until you flip it) and of the archive
+   > (expected: private, archived): the evidence for run 1, whose own log
+   > run 2 overwrote, and a fresh read for the acceptance results.
+{"isArchived":false,"nameWithOwner":"mc-devop/claude-box","visibility":"PRIVATE"}
+{"isArchived":true,"nameWithOwner":"mc-devop/claude-box-archive","visibility":"PRIVATE"}
+Done.

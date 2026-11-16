@@ -1,0 +1,6 @@
+2026-11-01T15:26:02.818Z [DEBUG] Skipping orphaned enabledPlugins entry elements-of-style@superpowers-marketplace: marketplace not registered
+2026-11-01T15:26:02.818Z [DEBUG] Skipping orphaned enabledPlugins entry superpowers@superpowers-marketplace: marketplace not registered
+2026-11-01T15:26:03.005Z [DEBUG] Synced 1 marketplace(s) from seed dir(s)
+2026-11-01T15:26:03.019Z [DEBUG] Using seed cache for elements-of-style@superpowers-marketplace at /seedB/cache/superpowers-marketplace/elements-of-style/1.0.0 (cache-only)
+2026-11-01T15:26:03.019Z [DEBUG] Using seed cache for superpowers@superpowers-marketplace at /seedA/cache/superpowers-marketplace/superpowers/7.0.1 (cache-only)
+2026-11-01T15:26:03.049Z [DEBUG] Loaded 15 skills from plugin superpowers default directory
