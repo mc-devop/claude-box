@@ -133,7 +133,7 @@ added.
 | Vision and backlog public, clean | Met | The private-terms check above; the link check passes with no link into `docs/change/` but this folder |
 | The archive | Met | [actions-run-2.log](actions-run-2.log), step 3: `{"isArchived":true,"visibility":"PRIVATE"}`; read again in [actions-run-3.log](actions-run-3.log): the archive private and archived, `mc-devop/claude-box` private and not archived. Run 2's `ls out` listing named other projects: those four lines are replaced by a marked line, and the full log stays in the archive |
 | The others told | Met | D10's notice to each of the three projects with a handoff, 2026-10-30, each in `out/handoff-<project>.md` |
-| Public | Open | `gh repo view mc-devop/claude-box` after your flip |
+| Public | Met, with a deviation | [actions-run-flip.log](actions-run-flip.log), 2026-11-16: `gh repo edit --visibility public`, read back `"visibility":"PUBLIC"`, one commit 80f1f91. The deviation: before the flip, `main` was squashed to that one commit (your decision, 2026-11-16), and the repo was deleted and created again so no earlier commit stays on GitHub; the runs are in the [operations log](../operations-log.md) |
 
 Run 1's own log is gone (run 2 overwrote it); its evidence is the
 stranger-test logs and [run 3's read](actions-run-3.log) of both repos. Branch 2's open
